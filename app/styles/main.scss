@@ -1,0 +1,216 @@
+/*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
+
+html,
+button,
+input,
+select,
+textarea {
+    color: #222;
+}
+
+button,
+input,
+select,
+textarea {
+  background: none;
+  padding: none;
+  margin: 0;
+  font-size: 100%;
+  vertical-align: middle;
+  border: none;
+  border-spacing: 0;
+  &:focus {
+    outline: none;
+  }
+}
+
+button::-moz-focus-inner,
+    input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+audio,
+canvas,
+img,
+video {
+    vertical-align: middle;
+}
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+@import "bourbon/bourbon";
+
+$font: 'Lato';
+
+body {
+  font-family: $font;
+  font-weight: 300;
+}
+
+li {
+  list-style: none;
+}
+
+h3 span {
+  color: #f99;
+}
+.option {
+  p {
+    display: inline-block;
+  }
+}
+
+input, textarea {
+  margin-top: .5em;
+  font-size: 1.2em;
+  padding: 3px 5px;
+  line-height: 1.2em;
+  border: 2px solid #999;
+  width: 90%;
+  @include placeholder{
+    font-family: $font;
+    font-weight: 300;
+    line-height: normal;
+  }
+}
+
+input {
+  display: inline-block;
+}
+input[type="checkbox"]{
+  width: auto;
+  display: inline-block;
+}
+
+button {
+  border: none;
+  &:hover {
+    cursor: pointer;
+  }
+  text-transform: uppercase;
+  font-weight: 700;
+  &::before {
+    content: '+'
+  }
+}
+
+button.submit {
+  border: 3px dotted #000;
+  background: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.75em;
+  margin: 1em auto .5em auto;
+  &:hover {
+    border-color: #F99;
+  }
+}
+
+div.container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  & > div {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    & > div {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    & div.a {
+      padding: 10px;
+      font-size: .75em;
+      width: 15%;
+    }
+    & div.b {
+      flex-grow: 2;
+      & > div {
+        width: 75%;
+      }
+    }
+  }
+  & div.three {
+    flex-direction: column;
+  }
+}
+
+p.parent, p.previous {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+div.question {
+  width: 50%;
+}
+
+div.student {
+  text-align: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  vertical-align: center;
+  div.question {
+    width: 100%;
+  }
+}
