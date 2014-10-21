@@ -2,6 +2,8 @@
 
 angular.module('dependencyQuizApp')
   .controller("TeacherCtrl", function($scope, shared){
+  // Form validatioN!!
+
   // DB
   var test = shared.test;
   var Questions = shared.Questions;
@@ -13,6 +15,9 @@ angular.module('dependencyQuizApp')
   var getTestQ = function(id){
     return test[id];
   }
+
+
+
   // ID helper function
   function generateUUID(){
     var d = Date.now();
@@ -87,6 +92,7 @@ angular.module('dependencyQuizApp')
   }
 
   $scope.submit = function(){
+    console.log(_.some($scope.currentTestQ.Q.choices, 'correct'))
     console.log($scope.currentTestQ)
     // saveQuestion($scope.currentQuestion);
     // $scope.parentQuestion.pop(); // this is TEMP, cuz submit soon will be a final thing
@@ -103,7 +109,7 @@ angular.module('dependencyQuizApp')
     Traverse(question);
     return arr;
   }
-
+ 
   $scope.currentTestQ = newTestQ();
   $scope.currentTestQ.first = true;
 
@@ -111,11 +117,16 @@ angular.module('dependencyQuizApp')
   $scope.previousQuestions = [];
   $scope.nextQuestions = [];
 
-  $scope.$watch('currentTestQ', function(curr, old){
+  $scope.$watch('currentTestQ.Q', function(curr, old){
+    if ($scope.newQuestion.$valid){
+      shared.dbSync();
+    }
+  }, true)
+
+  $scope.$watchCollection('currentTestQ', function(curr, old){
     $scope.parentQuestions = buildArray(curr, 'parent');
     $scope.previousQuestions = buildArray(curr, 'previous');
     $scope.nextQuestions = buildArray(curr, 'next');
-    shared.dbSync()
   })
   
 

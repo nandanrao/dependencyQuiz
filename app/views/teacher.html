@@ -1,4 +1,4 @@
- <form onsubmit="return false" role="form">
+ <form dq-new-question onsubmit="return false" novalidate name="newQuestion" role="form">
   <div class="container">
     <div class="one">
       <div class="parent" ng-if="parentQuestions.length > 0">
@@ -25,12 +25,12 @@
         <div class="question" ng-if="currentTestQ && currentTestQ.Q">  
           <div class="questionText">
             <label>Question:</label>
-            <textarea rows="4" ng-model="currentTestQ.Q.question" type="text" class="form-control" placeholder=""></textarea>
+            <textarea name="question" rows="4"required ng-minlength="3" ng-model="currentTestQ.Q.question" type="text" class="form-control" placeholder=""></textarea>
           </div>
           <div id="choices">
             <label>Answer choices:</label>
             <div class="choice" ng-repeat="choice in currentTestQ.Q.choices">
-              <input ng-model="choice.value" type="text">
+              <input required ng-model="choice.value" type="text">
               <input ng-model="choice.correct" type="checkbox">
             </div>
               <button ng-click="addChoice()">add another choice</button>
@@ -39,8 +39,11 @@
         </div>
     </div>
       <div class="c">
+        <div class="next" ng-if="nextQuestions.length > 0">
+          <p class="next" ng-repeat="next in nextQuestions" ng-click="show(next)">{{ next.Q.question }}</p>
+        </div>
         <div ng-if="currentTestQ && currentTestQ.Q" class="next">
-          <button class="next" ng-click="next()">next <span ng-if="currentTestQ.next"> ({{ currentTestQ.next.Q.question }}) </span> <span ng-if="!currentTestQ.next"> (new) </span></button>
+          <button class="next" ng-click="next()">add next (new) </button>
         </div>
       </div>
       
@@ -52,9 +55,11 @@
       </ul>
       <button ng-if="currentTestQ && currentTestQ.Q" ng-click="newDependency()" class="newDependency">Add <span ng-if="currentTestQ.dependencies.length > 0"> another </span>dependency</button>
       </div>
+      <!--
       <div ng-if="currentTestQ && currentTestQ.Q" class="submit">
         <button type="button" ng-click="submit()">Submit the test</button>
       </div>
+      
     </div>
   </div>
 </form>

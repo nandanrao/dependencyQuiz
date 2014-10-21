@@ -4,7 +4,7 @@
     <ul class="choices">
     <li class="choice" ng-repeat="choice in question.Q.choices">
       <p>
-      <button ng-style="std.style(choice)" class="choose" ng-click="std.choose(question.Q, choice)">this</button>
+      <button ng-style="std.style(choice)" class="choose" ng-click="std.choose(question.Q, choice)">{{ letters[$index] }}</button>
       <span class="choice">{{ choice.value }}</span>
       </p>
     </li>

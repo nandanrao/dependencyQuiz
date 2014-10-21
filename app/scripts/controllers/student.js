@@ -11,10 +11,11 @@ angular.module('dependencyQuizApp')
     return ans.correct ? true : false;
   }
 
-  $scope.runner = function(question, cb){
-    if (question.Q === null || question.Q === undefined){
-      return
-    }
+  var runner = function(question, cb){
+    console.log(shared.test, shared.db.testQs)
+    // if (question.Q === null || question.Q === undefined){
+    //   return
+    // }
     // Promise for submission
     var submitted = new Promise(function(resolve, reject){
       $scope.$on('submit', function(e, obj){
@@ -22,9 +23,9 @@ angular.module('dependencyQuizApp')
       })
     });
 
-
+    $scope.letters = ['a','b','c','d','e','f','g','h','i'];
     $scope.question = question;
-    $scope.$apply();
+    // $scope.$apply();
 
     submitted.then(function(results){
       if (!isCorrect(results)){
@@ -33,10 +34,17 @@ angular.module('dependencyQuizApp')
         console.log('not', results);
           $scope.runner(el, callback);
         }, function(err, done){
-          cb();
+            if (err) throw err;
+            if(question.next) {
+              $scope.runner(question.next)
+            }
+            else {
+              cb();
+            }
         });
       }
       else if (question.next){
+        console.log('theres a next');
         $scope.runner(question.next, function(){
           cb()
         })
@@ -58,7 +66,7 @@ angular.module('dependencyQuizApp')
   }
 
   this.style = function(choice){
-    return choice.chosen ? {'background-color': '#666'} : {'background-color': 'default'}
+    return choice.chosen ? {'background-color': '#F99'} : {'background-color': 'default'}
   }
 
   this.choose = function(question, choice){
@@ -69,19 +77,18 @@ angular.module('dependencyQuizApp')
     }  
   }
   // Run FUNCTIONS
-  shared.dbRetrieve();
-  $scope.question = null;
-  (function(){
-
+  $scope.question;
+  // weird starter function that finds the first question...
+  var startingQ;
     for (q in shared.test){
-      console.log(shared.test[q].first);
       if (shared.test[q].first) {
-        $scope.runner(shared.test[q], function(){
-          alert('all done!')
-        });
+        startingQ = shared.test[q]
       }
     }
-  })();
-  
+  console.log('db', startingQ, shared.db.testQs, Date.now());
+  runner(startingQ, function(){
+    alert('all done!')
+  });
+
 
   });

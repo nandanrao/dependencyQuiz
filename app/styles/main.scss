@@ -85,6 +85,7 @@ textarea {
 @import "bourbon/bourbon";
 
 $font: 'Lato';
+$accent: #f99;
 
 body {
   font-family: $font;
@@ -126,6 +127,12 @@ input[type="checkbox"]{
   display: inline-block;
 }
 
+form.ng-valid {
+  textarea, input {
+    border-color: #33FF99;
+  }
+}
+
 button {
   border: none;
   &:hover {
@@ -138,7 +145,7 @@ button {
   }
 }
 
-button.submit {
+button.submit, button.choose {
   border: 3px dotted #000;
   background: none;
   font-weight: 700;
@@ -148,6 +155,19 @@ button.submit {
   &:hover {
     border-color: #F99;
   }
+  &::before {
+    content: none;
+  }
+}
+
+button.submit {
+  margin-top: 2em;
+}
+
+button.choose {
+  font-size: 1em;
+  border-size: 2px;
+  margin: 0 10px 0 0;
 }
 
 div.container {
@@ -173,13 +193,13 @@ div.container {
       align-items: center;
       flex-direction: column;
     }
-    & div.a {
+    & div.a, div.c {
       padding: 10px;
       font-size: .75em;
       width: 15%;
     }
     & div.b {
-      flex-grow: 2;
+      flex-grow: 3;
       & > div {
         width: 75%;
       }
@@ -190,12 +210,36 @@ div.container {
   }
 }
 
-p.parent, p.previous {
+p.parent, p.previous, p.next, li.dependency {
   &:hover {
     cursor: pointer;
   }
 }
 
+p.parent, li.dependency {
+  text-align: center;
+  margin: auto auto;
+  font-size: .75em;
+  width: 60%;
+}
+
+p.question {
+  margin-bottom: 3em;
+}
+ul.choices {
+  margin-top: 5em;
+  text-align: left;
+  padding-left: 25%;
+  width: 50%;
+  margin: auto auto;
+  li {
+    margin: 1em auto;
+  }
+}
+
+button.next{
+  font-size: 1.33em;
+}
 div.question {
   width: 50%;
 }
