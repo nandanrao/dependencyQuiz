@@ -210,17 +210,21 @@ div.container {
   }
 }
 
-p.parent, p.previous, p.next, li.dependency {
-  &:hover {
-    cursor: pointer;
+div.parent, div.previous, div.next, div.dependency {
+  li {
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 
-p.parent, li.dependency {
-  text-align: center;
-  margin: auto auto;
-  font-size: .75em;
-  width: 60%;
+div.parent, div.dependency {
+  li {
+    text-align: center;
+    margin: auto auto;
+    font-size: .75em;
+    width: 60%;
+  }
 }
 
 p.question {

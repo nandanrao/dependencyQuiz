@@ -1,5 +1,5 @@
 angular.module('dependencyQuizApp')
-  .controller("StudentCtrl", function($scope, shared){
+  .controller("StudentCtrl", function($scope, db){
 
 
   $scope.submit = function(question){
@@ -77,15 +77,11 @@ angular.module('dependencyQuizApp')
     }  
   }
   // Run FUNCTIONS
-  $scope.question;
+  console.log(db.tests);
+  console.log(_.find(db.tests[0], {'_parent' : null, '_previous' : null}))
+  $scope.question = _.find(db.tests[0], {'_parent' : null, '_previous' : null})
   // weird starter function that finds the first question...
-  var startingQ;
-    for (q in shared.test){
-      if (shared.test[q].first) {
-        startingQ = shared.test[q]
-      }
-    }
-  console.log('db', startingQ, shared.db.testQs, Date.now());
+  
   runner(startingQ, function(){
     alert('all done!')
   });

@@ -1,63 +1,55 @@
  <form dq-new-question onsubmit="return false" novalidate name="newQuestion" role="form">
   <div class="container">
     <div class="one">
-      <div class="parent" ng-if="parentQuestions.length > 0">
-        <p ng-repeat="parent in parentQuestions" class="parent" ng-click="show(parent)">{{ parent.Q.question }}</p>
-      </div>
+      <div class="parent" links-nav="parent"></div>
     </div>
 
     <div class="two">
       <div class="a">
-        <div class="previous" ng-if="previousQuestions.length > 0">
-          <p class="previous" ng-repeat="previous in previousQuestions" ng-click="show(previous)">{{ previous.Q.question }}</p>
-        </div>
+      <!-- <previous-questions></previous-questions> -->
+        <div class="previous" links-nav="previous"></div>
       </div>
       
       <div class="b">
-        <div class="fresh" ng-if="!currentTestQ || !currentTestQ.Q">
-          <button class="new" ng-click="newQuestionBtn()">New Question</button>
+        <div class="fresh" ng-if="!currentTestQ || !currentTestQ._Q">
+          <button class="new" ng-click="teacher.newQuestionBtn()">New Question</button>
           <!--
           <button class="existing" ng-click="oldQuestionBtn()">
           Existing Question</button>
           -->
         </div>
 
-        <div class="question" ng-if="currentTestQ && currentTestQ.Q">  
+        <div class="question" ng-if="currentTestQ && currentTestQ._Q">  
           <div class="questionText">
             <label>Question:</label>
-            <textarea name="question" rows="4"required ng-minlength="3" ng-model="currentTestQ.Q.question" type="text" class="form-control" placeholder=""></textarea>
+            <textarea name="question" rows="4"required ng-minlength="3" ng-model="currentQuestion.question" type="text" class="form-control" placeholder=""></textarea>
           </div>
           <div id="choices">
             <label>Answer choices:</label>
-            <div class="choice" ng-repeat="choice in currentTestQ.Q.choices">
+            <div class="choice" ng-repeat="choice in currentQuestion.choices">
               <input required ng-model="choice.value" type="text">
               <input ng-model="choice.correct" type="checkbox">
             </div>
-              <button ng-click="addChoice()">add another choice</button>
+              <button ng-click="teacher.addChoice()">add another choice</button>
 
           </div>
         </div>
     </div>
       <div class="c">
-        <div class="next" ng-if="nextQuestions.length > 0">
-          <p class="next" ng-repeat="next in nextQuestions" ng-click="show(next)">{{ next.Q.question }}</p>
-        </div>
-        <div ng-if="currentTestQ && currentTestQ.Q" class="next">
-          <button class="next" ng-click="next()">add next (new) </button>
+        <div class="next" links-nav="next"></div>
+        <div ng-if="currentTestQ && currentTestQ._Q" class="next">
+          <button class="next" ng-click="teacher.next()">next </button>
         </div>
       </div>
       
     </div>
     <div class="three">
-      <div class="dependencies">
-      <ul>
-        <li class="dependency" ng-click="show(dependency)" ng-repeat="dependency in currentTestQ.dependencies">{{dependency.Q.question}}</li>
-      </ul>
-      <button ng-if="currentTestQ && currentTestQ.Q" ng-click="newDependency()" class="newDependency">Add <span ng-if="currentTestQ.dependencies.length > 0"> another </span>dependency</button>
-      </div>
-      <!--
-      <div ng-if="currentTestQ && currentTestQ.Q" class="submit">
-        <button type="button" ng-click="submit()">Submit the test</button>
+      <div class="dependencies" links-nav="dependencies"></div>
+
+      <button ng-if="currentTestQ && currentTestQ._Q" ng-click="teacher.newDependency()" class="newDependency">Add <span ng-if="currentTestQ.dependencies.length > 0"> another </span>dependency</button>
+      
+      <div ng-if="currentTestQ && currentTestQ._Q" class="submit">
+        <button type="button" ng-click="teacher.submit()">Submit the test</button>
       </div>
       
     </div>

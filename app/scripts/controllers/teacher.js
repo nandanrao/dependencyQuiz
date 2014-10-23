@@ -1,133 +1,116 @@
 'use strict';
 
 angular.module('dependencyQuizApp')
-  .controller("TeacherCtrl", function($scope, shared){
-  // Form validatioN!!
+  .controller("TeacherCtrl", function($scope, db){
 
   // DB
-  var test = shared.test;
-  var Questions = shared.Questions;
+  var db = db;
 
-  // DB Helper Functions
-  var getQ = function(id){
-    return Questions[id]
-  }
-  var getTestQ = function(id){
-    return test[id];
-  }
+  // __________Next/Dependency btn Dir________________________
 
-
-
-  // ID helper function
-  function generateUUID(){
-    var d = Date.now();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = (d + Math.random()*16)%16 | 0;
-      d = Math.floor(d/16);
-      return (c=='x' ? r : (r&0x7|0x8)).toString(16);
-    });
-    return uuid;
-  }; 
-  // Create a whole new question
-  var newQ = function(){
-    var Question = {
-      id: generateUUID(),
-      question: null,
-      choices: [{
-        value: null,
-      }],
+  this.next = function(){
+    if (!leaveAndCreate()) return;
+    console.log($scope.nextQuestions);
+    if ($scope.currentTestQ._next){
+      $scope.currentTestQ = $scope.currentTestQ._next;
     }
-    return Question 
-  }
-  // Create a new question in this test
-  var newTestQ = function(){
-    var testQ = {
-      id: generateUUID(),
-      Q: null,
-      dependencies : [],
-      parent: null,
-      next: null,
-      previous: null,
+    else {
+      var thisQuestion = db.newTestQ($scope.currentTest);
+      $scope.currentTestQ._next = thisQuestion.id;
+      thisQuestion._previous = $scope.currentTestQ.id;
+      $scope.currentTestQ = thisQuestion.id;  
     }
-    return testQ;
-  }
-  $scope.newQuestionBtn = function(){
-    var curr = $scope.currentTestQ
-    test[curr.id] = curr;
-    var Q = newQ();
-    curr.Q = Q;
-    Questions[Q.id] = Q; 
   }
 
-  $scope.oldQuestionBtn = function(){
+  this.newDependency = function(){
+    if (!leaveAndCreate()) return;
+    var thisQuestion = db.newTestQ($scope.currentTest);
+    $scope.currentTestQ._dependencies.push(thisQuestion.id)
+    thisQuestion._parent = $scope.currentTestQ.id;
+    $scope.currentTestQ = thisQuestion.id; 
+  };
+
+  function leaveAndCreate(){
+    if (!$scope.newQuestion.$valid){
+      alert('you gotta finish this one before making more!')
+      return false
+    }
+    else return true;
+  };
+
+  //_________________________________________
+
+  this.newQuestionBtn = function(){
+    var Q = db.newQ();
+    $scope.currentTestQ._Q = Q.id;
+  }
+
+  this.oldQuestionBtn = function(){
     // show lookup form
   }
 
-  $scope.next = function(){
-    if ($scope.currentTestQ.next){
-      $scope.currentTestQ = $scope.currentTestQ.next;
+  this.addChoice = function(){
+    $scope.currentQuestion.choices.push({value: null})
+  };
+
+  this.show = function(question){
+    if (leave()) {
+      $scope.currentTestQ = question.id;
+    }
+  };
+
+  // Helper function to check before leaving a page
+  function leave(){
+    if ($scope.newQuestion.$valid){
+      console.log($scope.newQuestion)
+      return true
     }
     else {
-      var thisQuestion = newTestQ();
-      $scope.currentTestQ.next = thisQuestion;
-      thisQuestion.previous = $scope.currentTestQ;
-      $scope.currentTestQ = thisQuestion;  
+      if (window.confirm('you really wanna go?')){
+        db.deleteTestQ($scope.currentTestQ, $scope.currentTest);
+        return true
+      }
+      else {
+        return false
+      }
     }
+  };
+
+  // window.onbeforeunload = function(e){
+  //   if (leave())
+  //   confirm('youre leaving!!')
+  // }
+
+  this.submit = function(){
+    console.log($scope.nextQuestions)
   }
 
-  $scope.newDependency = function(){
-    var thisQuestion = newTestQ();
-    $scope.currentTestQ.dependencies.push(thisQuestion)
-    thisQuestion.parent = $scope.currentTestQ;
-    $scope.currentTestQ = thisQuestion; 
-  }
-
-  $scope.addChoice = function(){
-    var Q = getQ($scope.currentTestQ.Q.id)
-    Q.choices.push({value: null})
-  }
-
-  $scope.show = function(question){
-    $scope.currentTestQ = test[question.id];
-  }
-
-  $scope.submit = function(){
-    console.log(_.some($scope.currentTestQ.Q.choices, 'correct'))
-    console.log($scope.currentTestQ)
-    // saveQuestion($scope.currentQuestion);
-    // $scope.parentQuestion.pop(); // this is TEMP, cuz submit soon will be a final thing
-    // $scope.currentQuestion = newQuestion();
-  }
-
-  var buildArray = function(question, property){
-    var arr = [];
-    function Traverse(question){
-      if (!question[property]) return;
-      arr.unshift(question[property]);
-      Traverse(question[property]);
-    }
-    Traverse(question);
-    return arr;
-  }
- 
-  $scope.currentTestQ = newTestQ();
-  $scope.currentTestQ.first = true;
-
-  $scope.parentQuestions = [];
-  $scope.previousQuestions = [];
-  $scope.nextQuestions = [];
-
-  $scope.$watch('currentTestQ.Q', function(curr, old){
-    if ($scope.newQuestion.$valid){
-      shared.dbSync();
-    }
-  }, true)
-
-  $scope.$watchCollection('currentTestQ', function(curr, old){
-    $scope.parentQuestions = buildArray(curr, 'parent');
-    $scope.previousQuestions = buildArray(curr, 'previous');
-    $scope.nextQuestions = buildArray(curr, 'next');
-  })
   
+  // Initialize
+  $scope.currentTest = db.newTest('sampleTest'); 
+  $scope._currentTQ = db.newTestQ($scope.currentTest).id;
 
+  // $scope.currentTestQ
+  Object.defineProperty($scope, 'currentTestQ', {
+    get: function(){
+      return $scope.currentTest.testQuestions[$scope._currentTQ]
+    },
+    set: function(id){
+      $scope._currentTQ = id
+    }
+  })
+
+  // $scope.currentQuestion
+  Object.defineProperty($scope, 'currentQuestion', {
+    get: function(){
+      return db.data.questions[$scope.currentTestQ._Q]
+    }
+  })
+
+  // $scope.$watch('currentTestQ.Q', function(curr, old){
+  //   if ($scope.newQuestion.$valid){
+  //     // shared.dbSync();
+  //   }
+  // }, true)
+ 
 });
