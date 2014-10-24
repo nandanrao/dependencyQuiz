@@ -43,9 +43,10 @@ angular
       return uuid;
     }; 
     // Create a whole new question
-    var newQ = function(){
+    var newQ = function(test){
       var Q = {
         id: generateUUID(),
+        ogTest: test.name,
         question: null,
         choices: [{
           value: null,

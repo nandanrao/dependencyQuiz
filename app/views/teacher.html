@@ -1,57 +1,10 @@
- <form dq-new-question onsubmit="return false" novalidate name="newQuestion" role="form">
-  <div class="container">
-    <div class="one">
-      <div class="parent" links-nav="parent"></div>
-    </div>
-
-    <div class="two">
-      <div class="a">
-      <!-- <previous-questions></previous-questions> -->
-        <div class="previous" links-nav="previous"></div>
-      </div>
-      
-      <div class="b">
-        <div class="fresh" ng-if="!currentTestQ || !currentTestQ._Q">
-          <button class="new" ng-click="teacher.newQuestionBtn()">New Question</button>
-          <!--
-          <button class="existing" ng-click="oldQuestionBtn()">
-          Existing Question</button>
-          -->
-        </div>
-
-        <div class="question" ng-if="currentTestQ && currentTestQ._Q">  
-          <div class="questionText">
-            <label>Question:</label>
-            <textarea name="question" rows="4"required ng-minlength="3" ng-model="currentQuestion.question" type="text" class="form-control" placeholder=""></textarea>
-          </div>
-          <div id="choices">
-            <label>Answer choices:</label>
-            <div class="choice" ng-repeat="choice in currentQuestion.choices">
-              <input required ng-model="choice.value" type="text">
-              <input ng-model="choice.correct" type="checkbox">
-            </div>
-              <button ng-click="teacher.addChoice()">add another choice</button>
-
-          </div>
-        </div>
-    </div>
-      <div class="c">
-        <div class="next" links-nav="next"></div>
-        <div ng-if="currentTestQ && currentTestQ._Q" class="next">
-          <button class="next" ng-click="teacher.next()">next </button>
-        </div>
-      </div>
-      
-    </div>
-    <div class="three">
-      <div class="dependencies" links-nav="dependencies"></div>
-
-      <button ng-if="currentTestQ && currentTestQ._Q" ng-click="teacher.newDependency()" class="newDependency">Add <span ng-if="currentTestQ.dependencies.length > 0"> another </span>dependency</button>
-      
-      <div ng-if="currentTestQ && currentTestQ._Q" class="submit">
-        <button type="button" ng-click="teacher.submit()">Submit the test</button>
-      </div>
-      
-    </div>
-  </div>
-</form>
+<test ng-if="currentTest"></test>
+<div class="home" ng-if="!currentTest">
+  <!-- <form novalidate name="newTest"> -->
+  <input type="text" ng-model="createTest.name">
+  <button class="newTest" ng-click="teacher.newTest()">add test</button>
+  <!-- </form> -->
+  <ul class="oldTests">
+    <li ng-repeat="t in tests" ng-click="teacher.setTest(t)">{{ t.name }}</li>
+  </ul>
+</div>

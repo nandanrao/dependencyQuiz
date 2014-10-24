@@ -245,9 +245,13 @@ button.next{
   font-size: 1.33em;
 }
 div.question {
-  width: 50%;
+  width: 60%;
+  margin: auto auto;
 }
 
+form[name="newQuestion"]{
+  width: 100%;
+}
 div.student {
   text-align: center;
   position: absolute;
@@ -260,5 +264,29 @@ div.student {
   vertical-align: center;
   div.question {
     width: 100%;
+  }
+}
+
+div.fresh {
+  button {
+    margin-top: 1em;
+    display: block;
+  }
+}
+
+div.home {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  text-align: center;
+  flex-direction: column;
+  * {
+    display: block;
+    width: 50%
   }
 }

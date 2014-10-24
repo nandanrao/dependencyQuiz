@@ -12,6 +12,7 @@ angular.module('dependencyQuizApp')
       templateUrl: 'views/linksNav.html',
       restrict: 'A',
       scope: true,
+      controllerAs: 'linksNav',
       controller: function($scope, $attrs, db){
 
         function createLink(id){
@@ -42,6 +43,29 @@ angular.module('dependencyQuizApp')
           }
           return arr;
         }
+
+        // Helper function to check before leaving a page
+        function leave(){
+          if ($scope.newQuestion.$valid){
+            console.log($scope.newQuestion)
+            return true
+          }
+          else {
+            if (window.confirm('you really wanna go?')){
+              db.deleteTestQ($scope.currentTestQ, $scope.currentTest);
+              return true
+            }
+            else {
+              return false
+            }
+          }
+        };
+
+        this.show = function(question){
+          if (leave()) {
+            $scope.currentTestQ = question.id;
+          }
+        };
 
         $scope.$watch('currentTestQ', function(curr, old){
           var str = '_' + $attrs.linksNav;

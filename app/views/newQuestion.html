@@ -1,0 +1,14 @@
+<div class="question" ng-if="currentQuestion">  
+  <div class="questionText">
+    <label>Question:</label>
+    <textarea name="question" rows="4"required ng-minlength="3" ng-model="currentQuestion.question" type="text" class="form-control" placeholder=""></textarea>
+  </div>
+  <div id="choices">
+    <label>Answer choices:</label>
+    <div class="choice" ng-repeat="choice in currentQuestion.choices">
+      <input required ng-model="choice.value" type="text">
+      <input ng-model="choice.correct" type="checkbox">
+    </div>
+      <button ng-click="test.addChoice()">add another choice</button>
+  </div>
+</div>
