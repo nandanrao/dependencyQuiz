@@ -46,13 +46,16 @@ angular.module('dependencyQuizApp')
 
         // Helper function to check before leaving a page
         function leave(){
+          if(!$scope.currentQuestion){
+            db.deleteTestQ($scope.currentTestQ.id, $scope.currentTest);
+            return true;
+          };
           if ($scope.newQuestion.$valid){
-            console.log($scope.newQuestion)
             return true
           }
           else {
             if (window.confirm('you really wanna go?')){
-              db.deleteTestQ($scope.currentTestQ, $scope.currentTest);
+              db.deleteTestQ($scope.currentTestQ.id, $scope.currentTest);
               return true
             }
             else {

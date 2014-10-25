@@ -11,8 +11,11 @@ angular.module('dependencyQuizApp')
     return ans.correct ? true : false;
   }
 
+  $scope.letters = ['a','b','c','d','e','f','g','h','i'];
+
   var runner = function(question, cb){
-    console.log(shared.test, shared.db.testQs)
+    // console.log(shared.test, shared.db.testQs)
+    console.log(question)
     // if (question.Q === null || question.Q === undefined){
     //   return
     // }
@@ -23,31 +26,25 @@ angular.module('dependencyQuizApp')
       })
     });
 
-    $scope.letters = ['a','b','c','d','e','f','g','h','i'];
-    $scope.question = question;
-    // $scope.$apply();
+    $scope.currentTestQ = question;
+    question = $scope.currentTestQ;
+    $scope.$apply();
 
     submitted.then(function(results){
       if (!isCorrect(results)){
-        console.log('here', question, question.dependencies)
-        async.eachSeries(question.dependencies, function(el, callback){
-        console.log('not', results);
-          $scope.runner(el, callback);
+        async.eachSeries(question._dependencies, function(el, callback){
+          runner(el, callback);
         }, function(err, done){
-            if (err) throw err;
-            if(question.next) {
-              $scope.runner(question.next)
+            if(question._next) {
+              runner(question._next, cb)
             }
             else {
               cb();
             }
         });
       }
-      else if (question.next){
-        console.log('theres a next');
-        $scope.runner(question.next, function(){
-          cb()
-        })
+      else if (question._next){
+        runner(question._next, cb)
       }
       else {
         cb();
@@ -70,6 +67,7 @@ angular.module('dependencyQuizApp')
   }
 
   this.choose = function(question, choice){
+    // console.log(question, choice)
     var pickedOption = isAnswered(question);
     choice.chosen ? choice.chosen = false : choice.chosen = true;
     if (pickedOption) {
@@ -77,12 +75,39 @@ angular.module('dependencyQuizApp')
     }  
   }
   // Run FUNCTIONS
-  console.log(db.tests);
-  console.log(_.find(db.tests[0], {'_parent' : null, '_previous' : null}))
-  $scope.question = _.find(db.tests[0], {'_parent' : null, '_previous' : null})
+  // console.log(db);
+  $scope.currentTest = db.data.tests['holla'];
+  // console.log(db.tests);
+  // console.log($scope.currentTest)
+  // console.log(_.find($scope.currentTest.testQuestions, { 'first' : true}))
+  
+
+   // $scope.currentTestQ
+  Object.defineProperty($scope, 'currentTestQ', {
+    get: function(){
+      // console.log($scope.currentTest.testQuestions[$scope._currentTQ])
+      return $scope.currentTest.testQuestions[$scope._currentTQ]
+    },
+    set: function(id){
+      $scope._currentTQ = id
+    }
+  })
+
+  // $scope.currentQuestion
+  Object.defineProperty($scope, 'currentQuestion', {
+    get: function(){
+      return db.data.questions[$scope.currentTestQ._Q]
+    },
+    set: function(q){
+      $scope.currentTestQ._Q = q.id
+    }
+  })
+
+  $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
+
   // weird starter function that finds the first question...
   
-  runner(startingQ, function(){
+  runner($scope.currentTestQ.id, function(){
     alert('all done!')
   });
 

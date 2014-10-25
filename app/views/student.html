@@ -1,14 +1,14 @@
 <div class="student">
   <div class="question">
-    <p class="question">{{ question.Q.question }}</p>
+    <p class="question">{{ currentQuestion.question }}</p>
     <ul class="choices">
-    <li class="choice" ng-repeat="choice in question.Q.choices">
+    <li class="choice" ng-repeat="choice in currentQuestion.choices">
       <p>
-      <button ng-style="std.style(choice)" class="choose" ng-click="std.choose(question.Q, choice)">{{ letters[$index] }}</button>
+      <button ng-style="std.style(choice)" class="choose" ng-click="std.choose(currentQuestion, choice)">{{ letters[$index] }}</button>
       <span class="choice">{{ choice.value }}</span>
       </p>
     </li>
     </ul>
-    <button ng-click="submit(question.Q)" class="submit">submit</button>
+    <button ng-click="submit(currentQuestion)" class="submit">submit</button>
   </div>
 </div>

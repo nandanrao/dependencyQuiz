@@ -24,7 +24,7 @@ angular
       })
       .when('/student', {
         templateUrl: 'views/student.html',
-        controller: 'StudentCtrl as student'
+        controller: 'StudentCtrl as std'
       })
       .otherwise({
         redirectTo: '/'

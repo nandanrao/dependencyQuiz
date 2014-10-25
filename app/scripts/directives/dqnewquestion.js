@@ -11,8 +11,11 @@ angular.module('dependencyQuizApp')
     return {    
       restrict: 'A',
       templateUrl: 'views/newQuestion.html',
+      controllerAs: 'dqNewQuestion',
       controller: function($scope, $attrs){
-        
+        this.addChoice = function(){
+          $scope.currentQuestion.choices.push({value: null})
+        };  
       },
       link: function(scope, el, attrs){
         var name = el[0].name

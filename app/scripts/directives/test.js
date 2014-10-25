@@ -64,11 +64,6 @@ angular.module('dependencyQuizApp')
           $scope.currentQuestion = q;
         }
 
-        this.addChoice = function(){
-          $scope.currentQuestion.choices.push({value: null})
-        };
-
-
         // window.onbeforeunload = function(e){
         //   if (leave())
         //   confirm('youre leaving!!')
