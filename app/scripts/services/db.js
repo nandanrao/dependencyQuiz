@@ -67,7 +67,7 @@ angular
       var testQ = {
         id: generateUUID(),
         _Q: null,
-        _dependencies : [],
+        _dependency: null,
         _parent: null,
         _next: null,
         _previous: null,

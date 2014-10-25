@@ -14,11 +14,6 @@ angular.module('dependencyQuizApp')
   $scope.letters = ['a','b','c','d','e','f','g','h','i'];
 
   var runner = function(question, cb){
-    // console.log(shared.test, shared.db.testQs)
-    console.log(question)
-    // if (question.Q === null || question.Q === undefined){
-    //   return
-    // }
     // Promise for submission
     var submitted = new Promise(function(resolve, reject){
       $scope.$on('submit', function(e, obj){
@@ -26,22 +21,21 @@ angular.module('dependencyQuizApp')
       })
     });
 
+    // set question as current question & use that in this function!
     $scope.currentTestQ = question;
     question = $scope.currentTestQ;
     $scope.$apply();
 
     submitted.then(function(results){
-      if (!isCorrect(results)){
-        async.eachSeries(question._dependencies, function(el, callback){
-          runner(el, callback);
-        }, function(err, done){
-            if(question._next) {
-              runner(question._next, cb)
-            }
-            else {
-              cb();
-            }
-        });
+      if (!isCorrect(results) && question._dependency){
+        runner(question._dependency, function(){
+          if (question._next) {
+            runner(question._next, cb)
+          }
+          else {
+            cb();
+          }
+        })      
       }
       else if (question._next){
         runner(question._next, cb)

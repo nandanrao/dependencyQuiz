@@ -33,16 +33,9 @@ angular.module('dependencyQuizApp')
             console.log('t', t)
             Traverse(t);
           }
-          if (property === '_dependencies'){
-            question._dependencies.forEach(function(el){
-              arr.push(createLink(el));
-            }) 
-          }
-          else {
-            Traverse(question);
-          }
+          Traverse(question);
           return arr;
-        }
+        };
 
         // Helper function to check before leaving a page
         function leave(){

@@ -31,9 +31,9 @@
     
   </div>
   <div class="three">
-    <div class="dependencies" links-nav="dependencies"></div>
+    <div class="dependencies" links-nav="dependency"></div>
 
-    <button ng-if="currentQuestion" ng-click="test.newDependency()" class="newDependency">Add <span ng-if="currentTestQ.dependencies.length > 0"> another </span>dependency</button>
+    <button ng-if="currentQuestion" ng-click="test.dependency()" class="newDependency">Add dependency</button>
     
     <div ng-if="currentQuestion" class="submit">
       <button type="button" ng-click="test.submit()">Submit the test</button>
