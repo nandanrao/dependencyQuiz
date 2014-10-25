@@ -32,13 +32,6 @@ angular
       delete test.testQuestions[id];
       _.forOwn(test.testQuestions, function(v, k, o){
         o[k] = _.mapValues(v, function(v, k){
-          // edge case for dependencies
-          if (_.isArray(v)){
-            _.remove(v, function(v){ 
-              return v === id;
-            });
-          }
-          // map value to null if it's the deleted ID
           return v === id ? null : v
         });
       })
