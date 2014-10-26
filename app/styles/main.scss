@@ -210,7 +210,7 @@ div.container {
   }
 }
 
-div.parent, div.previous, div.next, div.dependency {
+div.parent, div.previous, div.next, div.dependencies {
   li {
     &:hover {
       cursor: pointer;
@@ -218,7 +218,7 @@ div.parent, div.previous, div.next, div.dependency {
   }
 }
 
-div.parent, div.dependency {
+div.parent, div.dependencies {
   li {
     text-align: center;
     margin: auto auto;
@@ -285,8 +285,16 @@ div.home {
   justify-content: center; 
   text-align: center;
   flex-direction: column;
-  * {
-    display: block;
-    width: 50%
+  form {
+    width: 50%;
+    input {
+      width: 100%;
+    }
+    button {
+      display: inline-block;
+    } 
+  }
+  li {
+    cursor: pointer;
   }
 }

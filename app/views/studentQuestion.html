@@ -1,0 +1,14 @@
+<div class="student">
+  <div class="question">
+    <p class="question">{{ currentQuestion.question }}</p>
+    <ul class="choices">
+    <li class="choice" ng-repeat="choice in currentQuestion.choices">
+      <p>
+      <button ng-style="studentQuestion.style(choice)" class="choose" ng-click="studentQuestion.choose(currentQuestion, choice)">{{ letters[$index] }}</button>
+      <span class="choice">{{ choice.value }}</span>
+      </p>
+    </li>
+    </ul>
+    <button ng-click="studentQuestion.submit(currentQuestion)" class="submit">submit</button>
+  </div>
+</div>

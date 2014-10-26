@@ -8,16 +8,16 @@ angular.module('dependencyQuizApp')
   $scope.currentTest;
 
   $scope.createTest = {
-    name: 'holla'
+    name: null,
   }
 
   this.setTest = function(test){
     $scope.currentTest = test;
-    console.log($scope.currentTest)
   }
 
   this.newTest = function(){
-    console.log($scope.createTest.name)
-    $scope.currentTest = db.newTest($scope.createTest.name)
+    if ($scope.createTest.name){
+      $scope.currentTest = db.newTest($scope.createTest.name)
+    }
   }
 });

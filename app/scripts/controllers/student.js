@@ -1,31 +1,27 @@
 angular.module('dependencyQuizApp')
-  .controller("StudentCtrl", function($scope, db){
+.controller("StudentCtrl", function($scope, db, studentHelpers){
 
-
-  $scope.submit = function(question){
-    $scope.$emit('submit', question)
-  };
-  
-  function isCorrect(question){
+  // Helpers for test runner  
+  var isAnswered = studentHelpers.isAnswered
+  var isCorrect = function(question){
     var ans = isAnswered(question);
     return ans.correct ? true : false;
   }
-
-  $scope.letters = ['a','b','c','d','e','f','g','h','i'];
-
+  // Test runner!
   var runner = function(question, cb){
+    console.log('running')
     // Promise for submission
     var submitted = new Promise(function(resolve, reject){
       $scope.$on('submit', function(e, obj){
+        console.log('recieve', e, obj)
         resolve(obj);
       })
     });
-
     // set question as current question & use that in this function!
     $scope.currentTestQ = question;
     question = $scope.currentTestQ;
     $scope.$apply();
-
+    // Run after submission!
     submitted.then(function(results){
       if (!isCorrect(results) && question._dependency){
         runner(question._dependency, function(){
@@ -46,40 +42,14 @@ angular.module('dependencyQuizApp')
     })
   };
 
-  function isAnswered(question){
-    var ans;
-    question.choices.forEach(function(choice){
-      if (choice.chosen === true) {
-        ans = choice;
-      }
-    })
-    return ans;
-  }
-
-  this.style = function(choice){
-    return choice.chosen ? {'background-color': '#F99'} : {'background-color': 'default'}
-  }
-
-  this.choose = function(question, choice){
-    // console.log(question, choice)
-    var pickedOption = isAnswered(question);
-    choice.chosen ? choice.chosen = false : choice.chosen = true;
-    if (pickedOption) {
-      pickedOption.chosen = false;
-    }  
-  }
-  // Run FUNCTIONS
-  // console.log(db);
-  $scope.currentTest = db.data.tests['holla'];
-  // console.log(db.tests);
-  // console.log($scope.currentTest)
-  // console.log(_.find($scope.currentTest.testQuestions, { 'first' : true}))
-  
+  // Init
+  $scope.letters = ['a','b','c','d','e','f','g','h','i'];
+  $scope.currentTest =  _.find(db.data.tests, _.constant(true));
+  $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
 
    // $scope.currentTestQ
   Object.defineProperty($scope, 'currentTestQ', {
     get: function(){
-      // console.log($scope.currentTest.testQuestions[$scope._currentTQ])
       return $scope.currentTest.testQuestions[$scope._currentTQ]
     },
     set: function(id){
@@ -97,13 +67,9 @@ angular.module('dependencyQuizApp')
     }
   })
 
-  $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
-
-  // weird starter function that finds the first question...
-  
+  // run the test runner!
   runner($scope.currentTestQ.id, function(){
     alert('all done!')
   });
 
-
-  });
+});

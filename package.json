@@ -1,14 +1,10 @@
 {
   "name": "dependencyquiz",
   "version": "0.0.0",
-  "dependencies": {
-    "express": "^4.9.8",
-    "good": "^3.0.1",
-    "hapi": "^7.0.0",
-    "path": "^0.4.9"
-  },
+  "dependencies": {},
   "devDependencies": {
     "grunt": "^0.4.1",
+    "grunt-angular-templates": "^0.5.7",
     "grunt-autoprefixer": "^0.7.3",
     "grunt-concurrent": "^0.5.0",
     "grunt-contrib-clean": "^0.5.0",

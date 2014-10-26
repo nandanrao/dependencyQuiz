@@ -77,6 +77,8 @@ angular
     }
 
     var newTest = function(name){
+      console.log(name);
+      if (!name) throw 'error';
       var test = {
         name: name,
         testQuestions: {},

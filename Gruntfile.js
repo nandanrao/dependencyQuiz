@@ -307,6 +307,34 @@ module.exports = function (grunt) {
       }
     },
 
+    // ngtemplates: {
+    //   options: {
+    //     // This should be the name of your apps angular module
+    //     module: 'dependencyQuiz',
+    //     htmlmin: {
+    //       collapseBooleanAttributes: true,
+    //       collapseWhitespace: true,
+    //       removeAttributeQuotes: true,
+    //       removeEmptyAttributes: true,
+    //       removeRedundantAttributes: true,
+    //       removeScriptTypeAttributes: true,
+    //       removeStyleLinkTypeAttributes: true
+    //     },
+    //     usemin: 'scripts/scripts.js'
+    //   },
+    //   main: {
+    //     cwd: '<%= yeoman.app %>',
+    //     src: ['*.html', 'views/{,*/}*.html'],
+    //     dest: '.tmp/templates.js'
+    //   },
+    //   tmp: {
+    //     cwd: '.tmp',
+    //     src: ['*.html', 'views/{,*/}*.html'],
+    //     dest: '.tmp/tmp-templates.js'
+    //   }
+
+    // },
+
     // ng-annotate tries to make the code safe for minification automatically
     // by using the Angular long form for dependency injection.
     ngAnnotate: {
@@ -425,7 +453,8 @@ module.exports = function (grunt) {
     'uglify',
     'filerev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    // 'ngtemplates',
   ]);
 
   grunt.registerTask('default', [
