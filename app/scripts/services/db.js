@@ -31,7 +31,7 @@ angular
 
     var setTestQ = function(q, test){
       if (!test.testQuestions){
-         console.log('wiping old tests')
+        console.log('reseting testQuestions!')
         test.testQuestions = {};
       }
       test.testQuestions[q.id] = q;

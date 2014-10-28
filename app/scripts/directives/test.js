@@ -111,7 +111,6 @@ angular.module('dependencyQuizApp')
         // $scope.currentQuestion
         Object.defineProperty($scope, 'currentQuestion', {
           get: function(){
-            // console.log('this is db.data.questions', db.data.questions);
             return db.data.questions[$scope.currentTestQ.Q]
           },
           set: function(q){

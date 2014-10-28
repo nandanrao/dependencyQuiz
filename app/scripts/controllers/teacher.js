@@ -7,8 +7,6 @@ angular.module('dependencyQuizApp')
 
   $scope.currentTest;
 
-  // db.data.questions.$bindTo($scope, 'usersQuestions');
-
   $scope.createTest = {
     name: null,
   }
