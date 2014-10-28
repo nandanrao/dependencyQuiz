@@ -7,6 +7,8 @@ angular.module('dependencyQuizApp')
 
   $scope.currentTest;
 
+  // db.data.questions.$bindTo($scope, 'usersQuestions');
+
   $scope.createTest = {
     name: null,
   }
@@ -17,7 +19,8 @@ angular.module('dependencyQuizApp')
 
   this.newTest = function(){
     if ($scope.createTest.name){
-      $scope.currentTest = db.newTest($scope.createTest.name)
+      var test = db.newTest($scope.createTest.name);
+      test.$bindTo($scope, 'currentTest');
     }
   }
 });

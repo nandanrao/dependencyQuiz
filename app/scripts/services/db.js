@@ -9,15 +9,20 @@
  */
 angular
   .module('dependencyQuizApp')
-  .factory('db', function($localStorage){
+  .factory('db', function($localStorage, $firebase){
 
-    var db = $localStorage;
-    db.questions = db.questions || {};
-    db.tests = db.tests || {};
+    var URL = 'https://dependencyquiz.firebaseio.com/'
+    var ref = new Firebase(URL);
+    var db_questions = ref.child('questions');
+    var db_tests = ref.child('tests');
+    var db = {};
+    db.questions = $firebase(new Firebase(db_questions.toString())).$asObject();
+    db.tests = $firebase(new Firebase(db_tests.toString())).$asObject();
+
 
     var getQuestion = function(t_id, test) {
       var t = getTestQ(t_id, test)
-      return db.questions[t._Q]
+      return db.questions[t.Q]
     };
 
     var getTestQ = function(id, test){
@@ -25,6 +30,10 @@ angular
     };
 
     var setTestQ = function(q, test){
+      if (!test.testQuestions){
+         console.log('wiping old tests')
+        test.testQuestions = {};
+      }
       test.testQuestions[q.id] = q;
     }
 
@@ -36,8 +45,6 @@ angular
         });
       })
     }
-
-    // deleteTestQ("f1e3b6e7-655b-46dc-9735-598fb77e925d", db.tests['holla'])
 
     // ID helper function
     function generateUUID(){
@@ -51,40 +58,39 @@ angular
     }; 
     // Create a whole new question
     var newQ = function(test){
-      var Q = {
-        id: generateUUID(),
+      var id = generateUUID();
+      var QRef = db_questions.child(id)
+      QRef.set({
+        id: id,
         ogTest: test.name,
         question: null,
-        choices: [{
-          value: null,
-        }],
-      }
-      db.questions[Q.id] = Q;
+        choices: [{value: ''}],
+      });
+      var Q = $firebase(QRef).$asObject();
       return Q;
     }
     // Create a new question in this test
     var newTestQ = function(test){
-      var testQ = {
-        id: generateUUID(),
-        _Q: null,
-        _dependency: null,
-        _parent: null,
-        _next: null,
-        _previous: null,
-      }
+      var testQ = {};
+      testQ.id = generateUUID(),
+      testQ.Q = false,
+      testQ.dependency = false,
+      testQ.parent = false,
+      testQ.next = false,
+      testQ.previous = false,
       setTestQ(testQ, test);
       return testQ;
     }
 
     var newTest = function(name){
-      console.log(name);
       if (!name) throw 'error';
-      var test = {
+      var testRef = db_tests.child(name);
+      var test = $firebase(new Firebase(testRef.toString()));
+      test.$set({
         name: name,
-        testQuestions: {},
-      };
-      db.tests[name] = test;
-      return test
+        testQuestions: false,
+      })
+      return test.$asObject();
     }
 
     return {

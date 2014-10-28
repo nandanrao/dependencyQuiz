@@ -44,6 +44,7 @@ angular.module('dependencyQuizApp')
 
   // Init
   $scope.letters = ['a','b','c','d','e','f','g','h','i'];
+  console.log(db.data.tests);
   $scope.currentTest =  _.find(db.data.tests, _.constant(true));
   $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
 

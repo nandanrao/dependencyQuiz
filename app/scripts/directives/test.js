@@ -18,15 +18,14 @@ angular.module('dependencyQuizApp')
 
         this.next = function(){
           if (!leaveAndCreate()) return;
-          console.log($scope.nextQuestions);
-          if ($scope.currentTestQ._next){
-            $scope.currentTestQ = $scope.currentTestQ._next;
+          if ($scope.currentTestQ.next){
+            $scope.currentTestQ = $scope.currentTestQ.next;
           }
           else {
             var thisQuestion = db.newTestQ($scope.currentTest);
-            $scope.currentTestQ._next = thisQuestion.id;
-            thisQuestion._previous = $scope.currentTestQ.id;
-            thisQuestion._parent = $scope.currentTestQ._parent || null;
+            $scope.currentTestQ.next = thisQuestion.id;
+            thisQuestion.previous = $scope.currentTestQ.id;
+            thisQuestion.parent = $scope.currentTestQ.parent || null;
             $scope.currentTestQ = thisQuestion.id;  
           }
         }
@@ -34,9 +33,9 @@ angular.module('dependencyQuizApp')
         this.dependency = function(){
           if (!leaveAndCreate()) return;
           var thisQuestion = db.newTestQ($scope.currentTest);
-          $scope.currentTestQ._dependency = thisQuestion.id
-          thisQuestion._parent = $scope.currentTestQ.id;
-          $scope.currentTestQ = thisQuestion.id; 
+          $scope.currentTestQ.dependency = thisQuestion.id
+          thisQuestion.parent = $scope.currentTestQ.id;
+          $scope.currentTestQ = thisQuestion.id;
         };
 
         function leaveAndCreate(){
@@ -44,14 +43,20 @@ angular.module('dependencyQuizApp')
             alert('you gotta finish this one before making more!')
             return false
           }
-          else return true;
+          else {
+            db.data.questions.$save();
+            return true;
+          }
         };
  
         //_________________________________________
 
         this.newQuestionBtn = function(){
           var Q = db.newQ($scope.currentTest);
-          $scope.currentTestQ._Q = Q.id;
+          Q.$loaded().then(function(){
+            $scope.currentQuestion = Q;  
+          })
+          // console.log(Q)
         }
 
         this.oldQuestionBtn = function(){
@@ -61,6 +66,7 @@ angular.module('dependencyQuizApp')
           // show lookup form
         }
 
+        // Used when picking an old question...
         this.setQ = function(q){
           $scope.currentQuestion = q;
         }
@@ -75,17 +81,20 @@ angular.module('dependencyQuizApp')
         }
 
         var hasFirst = function(test){
+          console.log(test);
           return _.find(test.testQuestions, 'first')
         }
 
         var createFirst = function(test){
           var t = db.newTestQ(test);
           t.first = true;
+          console.log(t.id)
           return t;
         }
 
         // Initialize 
         $scope._currentTQ = hasFirst($scope.currentTest) ? hasFirst($scope.currentTest).id : createFirst($scope.currentTest).id;
+        $scope._currentQ;
         $scope.oldQuestions;
 
         // $scope.currentTestQ
@@ -94,6 +103,7 @@ angular.module('dependencyQuizApp')
             return $scope.currentTest.testQuestions[$scope._currentTQ]
           },
           set: function(id){
+            console.log('set currentTestQ')
             $scope._currentTQ = id
           }
         })
@@ -101,10 +111,12 @@ angular.module('dependencyQuizApp')
         // $scope.currentQuestion
         Object.defineProperty($scope, 'currentQuestion', {
           get: function(){
-            return db.data.questions[$scope.currentTestQ._Q]
+            // console.log('this is db.data.questions', db.data.questions);
+            return db.data.questions[$scope.currentTestQ.Q]
           },
           set: function(q){
-            $scope.currentTestQ._Q = q.id
+            $scope.currentTestQ.Q = q.id
+            console.log($scope.currentTestQ);
           }
         })
       }

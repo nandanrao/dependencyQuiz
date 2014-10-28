@@ -14,7 +14,8 @@ angular
     'ngResource',
     'ngRoute',
     'ngStorage',
-    'ngSanitize'
+    'ngSanitize',
+    'firebase',
   ])
   .config(function ($routeProvider) {
     $routeProvider
