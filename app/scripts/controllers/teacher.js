@@ -2,17 +2,11 @@
 
 angular.module('dependencyQuizApp')
   .controller("TeacherCtrl", function($scope, db){
- 
-  $scope.tests = db.data.tests;
 
   $scope.currentTest;
 
   $scope.createTest = {
     name: null,
-  }
-
-  this.setTest = function(test){
-    $scope.currentTest = test;
   }
 
   this.newTest = function(){

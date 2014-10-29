@@ -1,0 +1,17 @@
+  <div class="profile">
+    <p>This is the home view.</p>
+    <button ng-click='home.logout()'>logout</button>
+    <p>{{ auth.user.displayName }}</p>
+    <img src="{{auth.user.thirdPartyUserData.picture}}" alt="" width='100px'>
+  </div>
+  <div class="testsTaken">
+    <ul class="testsTaken">
+      <li></li>
+    </ul>
+  </div>
+  <div class="testsCreated">
+    <ul class="testsCreated">
+      <li ng-repeat="test in tests">{{ test.name }}</li>
+    </ul>
+    <button class="newTest" ng-click="home.newTest()">new test!</button>
+  </div>

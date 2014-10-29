@@ -9,16 +9,33 @@
  */
 angular
   .module('dependencyQuizApp')
-  .factory('db', function($localStorage, $firebase){
-
-    var URL = 'https://dependencyquiz.firebaseio.com/'
-    var ref = new Firebase(URL);
-    var db_questions = ref.child('questions');
-    var db_tests = ref.child('tests');
+  .factory('db', function($rootScope, $localStorage, $firebase, auth, fb, $q){
+    
     var db = {};
-    db.questions = $firebase(new Firebase(db_questions.toString())).$asObject();
-    db.tests = $firebase(new Firebase(db_tests.toString())).$asObject();
 
+    db.testResults = function(test){
+      var results = $firebase(db.testResults.startAt(test.id).endAt(test.id)).$asObject();
+      return results.$loaded();
+    }
+
+    var loaded = auth.$getCurrentUser().then(loadDB)
+
+    function loadDB(user){
+      console.log('ran loadDB')
+      if (!user){
+        return
+      }
+      console.log('loaddb')
+      db.questions = $firebase(fb.questions).$asObject();
+      db.tests = $firebase(fb.tests.startAt(auth.user.id).endAt(auth.user.id)).$asObject();
+
+      $rootScope.tests = db.tests;
+      $rootScope.questions = db.questions;
+      // lookup users tests
+      // db.testsTaken = $firebase(user.testResults)
+      // $rootScope.testsTaken = db.testsTaken
+      return $q.all([db.tests.$loaded(), db.questions.$loaded()])  
+    }
 
     var getQuestion = function(t_id, test) {
       var t = getTestQ(t_id, test)
@@ -59,7 +76,7 @@ angular
     // Create a whole new question
     var newQ = function(test){
       var id = generateUUID();
-      var QRef = db_questions.child(id)
+      var QRef = fb.questions.child(id)
       QRef.set({
         id: id,
         ogTest: test.name,
@@ -84,14 +101,16 @@ angular
 
     var newTest = function(name){
       if (!name) throw 'error';
-      var testRef = db_tests.child(name);
-      var test = $firebase(new Firebase(testRef.toString()));
-      test.$set({
+      var testRef = fb.tests.child(name);
+      testRef.setWithPriority({
         name: name,
+        user: auth.user.id,
         testQuestions: false,
-      })
+      }, auth.user.id)
+      var test = $firebase(testRef);
       return test.$asObject();
     }
+
 
     return {
       data: db,
@@ -102,6 +121,8 @@ angular
       newTestQ: newTestQ,
       newQ: newQ,
       newTest: newTest,
+      // promise that resolves when the db has loaded...
+      loaded: loaded,
     }
 
   })

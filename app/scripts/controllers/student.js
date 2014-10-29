@@ -1,5 +1,5 @@
 angular.module('dependencyQuizApp')
-.controller("StudentCtrl", function($scope, db, studentHelpers){
+.controller("StudentCtrl", function($scope, db, studentHelpers, $stateParams, $firebase, currentTest){
 
   // Helpers for test runner  
   var isAnswered = studentHelpers.isAnswered
@@ -9,7 +9,7 @@ angular.module('dependencyQuizApp')
   }
   // Test runner!
   var runner = function(question, cb){
-    console.log('running')
+
     // Promise for submission
     var submitted = new Promise(function(resolve, reject){
       $scope.$on('submit', function(e, obj){
@@ -20,21 +20,22 @@ angular.module('dependencyQuizApp')
     // set question as current question & use that in this function!
     $scope.currentTestQ = question;
     question = $scope.currentTestQ;
-    $scope.$apply();
+        console.log('running', question)
+    $scope.$applyAsync();
     // Run after submission!
     submitted.then(function(results){
-      if (!isCorrect(results) && question._dependency){
-        runner(question._dependency, function(){
-          if (question._next) {
-            runner(question._next, cb)
+      if (!isCorrect(results) && question.dependency){
+        runner(question.dependency, function(){
+          if (question.next) {
+            runner(question.next, cb)
           }
           else {
             cb();
           }
         })      
       }
-      else if (question._next){
-        runner(question._next, cb)
+      else if (question.next){
+        runner(question.next, cb)
       }
       else {
         cb();
@@ -44,8 +45,14 @@ angular.module('dependencyQuizApp')
 
   // Init
   $scope.letters = ['a','b','c','d','e','f','g','h','i'];
-  console.log(db.data.tests);
-  $scope.currentTest =  _.find(db.data.tests, _.constant(true));
+
+
+  this.startTest = function(){
+    $scope.testResults = true;
+    $scope.testResults.startTime = Date.now();
+  }
+
+  $scope.currentTest = currentTest;
   $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
 
    // $scope.currentTestQ
@@ -61,10 +68,10 @@ angular.module('dependencyQuizApp')
   // $scope.currentQuestion
   Object.defineProperty($scope, 'currentQuestion', {
     get: function(){
-      return db.data.questions[$scope.currentTestQ._Q]
+      return db.data.questions[$scope.currentTestQ.Q]
     },
     set: function(q){
-      $scope.currentTestQ._Q = q.id
+      $scope.currentTestQ.Q = q.id
     }
   })
 

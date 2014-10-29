@@ -2,9 +2,6 @@
 <div class="home" ng-if="!currentTest">
   <form novalidate name="newTest">
     <input type="text" required ng-model="createTest.name">
-    <button class="newTest" ng-click="teacher.newTest()">add test</button>
+    <button class="newTest" ng-click="teacher.newTest()">make this test</button>
   </form>
-  <ul class="oldTests">
-    <li ng-repeat="t in tests" ng-click="teacher.setTest(t)">{{ t.name }}</li>
-  </ul>
 </div>
