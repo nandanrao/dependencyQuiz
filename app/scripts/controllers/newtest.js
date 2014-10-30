@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('dependencyQuizApp')
-  .controller("TeacherCtrl", function($scope, db){
+  .controller("NewTestCtrl", function($scope, db, $state){
 
-  $scope.currentTest;
+  
 
   $scope.createTest = {
     name: null,
@@ -12,7 +12,9 @@ angular.module('dependencyQuizApp')
   this.newTest = function(){
     if ($scope.createTest.name){
       var test = db.newTest($scope.createTest.name);
-      test.$bindTo($scope, 'currentTest');
+      test.$loaded().then(function(){
+        $state.go('edit', {test: test.name})  
+      })
     }
   }
 });

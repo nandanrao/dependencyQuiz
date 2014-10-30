@@ -13,9 +13,28 @@ angular
     
     var db = {};
 
-    db.testResults = function(test){
-      var results = $firebase(db.testResults.startAt(test.id).endAt(test.id)).$asObject();
+    var createTestResults = function(test, user, start){
+      var id = generateUUID();
+      var resultsRef = fb.testResults.child(id);
+      resultsRef.setWithPriority({
+        id: id,
+        test: test.name,
+        user: user.id,
+        start: start
+      }, test.name)
+      var results = $firebase(resultsRef).$asObject();
       return results.$loaded();
+    }
+
+    var getTestResults = function(test){
+      var results = $firebase(fb.testResults.startAt(test.id).endAt(test.id)).$asObject();
+      return results;
+    }
+
+    var getTest = function(testId){
+      var test = $firebase(fb.tests.child(testId)).$asObject();
+      console.log('holla', test)
+      return test.$loaded();
     }
 
     var loaded = auth.$getCurrentUser().then(loadDB)
@@ -29,8 +48,8 @@ angular
       db.questions = $firebase(fb.questions).$asObject();
       db.tests = $firebase(fb.tests.startAt(auth.user.id).endAt(auth.user.id)).$asObject();
 
-      $rootScope.tests = db.tests;
-      $rootScope.questions = db.questions;
+      // $rootScope.tests = db.tests;
+      // $rootScope.questions = db.questions;
       // lookup users tests
       // db.testsTaken = $firebase(user.testResults)
       // $rootScope.testsTaken = db.testsTaken
@@ -121,6 +140,9 @@ angular
       newTestQ: newTestQ,
       newQ: newQ,
       newTest: newTest,
+      getTest: getTest,
+      getTestResults : getTestResults,
+      createTestResults: createTestResults,
       // promise that resolves when the db has loaded...
       loaded: loaded,
     }

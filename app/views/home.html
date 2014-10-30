@@ -10,8 +10,9 @@
     </ul>
   </div>
   <div class="testsCreated">
+    <h2 class="testsCreated">Tests I've Created</h2>
     <ul class="testsCreated">
-      <li ng-repeat="test in tests">{{ test.name }}</li>
+      <li ng-repeat="test in tests">{{ test.name }}<span ng-click="home.editTest(test)">edit</span><span ng-click="home.viewResults(test)">results</span></li>
     </ul>
     <button class="newTest" ng-click="home.newTest()">new test!</button>
   </div>

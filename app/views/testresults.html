@@ -1,0 +1,8 @@
+<p>This is the testResults view.</p>
+<ul>
+  <li ng-repeat="result in testResults">{{ result.user }}
+    <ul>
+      <li ng-repeat="answer in result.results">{{ answer.correct }}</li>
+    </ul>
+  </li>
+</ul>

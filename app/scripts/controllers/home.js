@@ -12,6 +12,7 @@ angular.module('dependencyQuizApp')
 
   $scope.auth = auth;
 
+  $scope.tests = db.data.tests
 
   this.logout = function(){
     console.log('logging out')
@@ -25,6 +26,15 @@ angular.module('dependencyQuizApp')
   this.newTest = function(){
     console.log('making new test')
     $location.path('/newtest')
+  }
+
+  this.editTest = function(test){
+    $state.go('edit', {test: test.name})
+  }
+
+  this.viewResults = function(test){
+    console.log("view", test.name)
+    $state.go('results', {test: test.name})
   }
 
   });

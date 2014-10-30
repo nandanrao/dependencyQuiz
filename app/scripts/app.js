@@ -47,8 +47,21 @@ angular
       })
       .state('newTest', {
         url: '/newtest',
-        templateUrl: 'views/teacher.html',
-        controller: 'TeacherCtrl as teacher',
+        templateUrl: 'views/newtest.html',
+        controller: 'NewTestCtrl as newtest',
+      })
+      .state('edit', {
+        url: '/edit/:test',
+        templateUrl: 'views/edit.html',
+        controller: 'EditCtrl as edit',
+        resolve: {
+          'dbLoaded': ['db', function(db){
+            return db.loaded;
+          }],
+          'test': ['db', '$stateParams', function(db, $stateParams){
+            return db.getTest($stateParams.test)
+          }]
+        }
       })
       .state('tests', {
         url: '/tests/:id',
@@ -59,6 +72,20 @@ angular
             var _testRef = fb.tests.child($stateParams.id);
             var _fbtest = $firebase(_testRef).$asObject();
             return _fbtest.$loaded()
+          }]
+        }
+      })
+      .state('results', {
+        url: '/results/:test',
+        templateUrl: 'views/testresults.html',
+        controller: 'ResultsCtrl as results',
+        resolve: {
+          'test': ['db', '$stateParams', function(db, $stateParams){
+            console.log($stateParams.test)
+            return db.getTest($stateParams.test)
+          }],
+          'testResults': ['$firebase', '$stateParams', 'fb', 'test', 'db', function($firebase, $stateParams, fb, test, db){
+            return db.getTestResults(test).$loaded();           
           }]
         }
       })

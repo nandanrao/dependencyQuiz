@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="one">
+    <div class="parent" links-nav="parent"></div>
+  </div>
+
+  <div class="two">
+    <div class="a">
+    <!-- <previous-questions></previous-questions> -->
+      <div class="previous" links-nav="previous"></div>
+    </div>
+    
+    <div class="b">
+    
+      <div class="fresh" ng-if="currentTest && !currentQuestion">
+        <button class="new" ng-click="edit.newQuestionBtn()">New Question</button>
+        <button class="existing" ng-click="edit.oldQuestionBtn()">Existing Question</button>
+        
+        <ul ng-if="oldQuestions" class="existing">
+          <li ng-repeat="q in oldQuestions" ng-click="edit.setQ(q)">{{ q.question }}</li>
+        </ul>
+        
+      </div>
+      <form novalidate name="newQuestion" dq-new-question></form>
+  </div>
+    <div class="c">
+      <div class="next" links-nav="next"></div>
+      <div ng-if="currentQuestion" class="next">
+        <button class="next" ng-click="edit.next()">next </button>
+      </div>
+    </div>
+    
+  </div>
+  <div class="three">
+    <div class="dependencies" links-nav="dependency"></div>
+
+    <button ng-if="currentQuestion" ng-click="edit.dependency()" class="newDependency">Add dependency</button>
+    
+    <div ng-if="currentQuestion" class="submit">
+      <button type="button" ng-click="edit.submit()">Submit the test</button>
+    </div>
+    
+  </div>
+</div>

@@ -1,5 +1,5 @@
 angular.module('dependencyQuizApp')
-.controller("StudentCtrl", function($scope, db, studentHelpers, $stateParams, $firebase, currentTest){
+.controller("StudentCtrl", function($scope, db, studentHelpers, $stateParams, $firebase, currentTest, auth){
 
   // Helpers for test runner  
   var isAnswered = studentHelpers.isAnswered
@@ -23,8 +23,15 @@ angular.module('dependencyQuizApp')
         console.log('running', question)
     $scope.$applyAsync();
     // Run after submission!
-    submitted.then(function(results){
-      if (!isCorrect(results) && question.dependency){
+    submitted.then(function(Q){
+      $scope.testResults.results = $scope.testResults.results || [];
+      console.log(Q.id, isAnswered(Q), isCorrect(Q));
+      $scope.testResults.results.push({
+       question: Q.id,
+       answer: isAnswered(Q).value, 
+       correct: isCorrect(Q), 
+      });
+      if (!isCorrect(Q) && question.dependency){
         runner(question.dependency, function(){
           if (question.next) {
             runner(question.next, cb)
@@ -46,10 +53,19 @@ angular.module('dependencyQuizApp')
   // Init
   $scope.letters = ['a','b','c','d','e','f','g','h','i'];
 
-
-  this.startTest = function(){
+  this.startTest = function(test){
     $scope.testResults = true;
-    $scope.testResults.startTime = Date.now();
+    var start = Date.now();
+    db.createTestResults(test, auth.user, start).then(function(testResults){
+      console.log('created!', testResults);
+      testResults.$bindTo($scope, 'testResults');
+    })
+  };
+
+  var endTest = function(){
+    var end = Date.now();
+    $scope.testResults.end = end;
+    $scope.$apply();
   }
 
   $scope.currentTest = currentTest;
@@ -77,7 +93,7 @@ angular.module('dependencyQuizApp')
 
   // run the test runner!
   runner($scope.currentTestQ.id, function(){
-    alert('all done!')
+    endTest();
   });
 
 });
