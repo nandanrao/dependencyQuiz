@@ -26,6 +26,28 @@ angular
       return results.$loaded();
     }
 
+     var getQuestions = function(test){
+      // Helper function to build questions db!
+      function questionsDbBuilder(arr){
+        var questions = {};
+        _.forEach(arr, function(Q){
+          questions[Q.id] = Q;
+        })
+        return $q(function(resolve, reject){
+          resolve(questions)
+        })
+      }
+      // Create promises for each firebase question object to load
+      var promises = [];
+      console.log(test);
+      _.forEach(test.testQuestions, function(tq){
+        if (!tq.Q) console.log('no question in this test question!')
+        var Q = $firebase(fb.questions.child(tq.Q)).$asObject();
+        promises.push(Q.$loaded())
+      })
+      return $q.all(promises).then(questionsDbBuilder)   
+    }
+
     var getTestResults = function(test){
       var results = $firebase(fb.testResults.startAt(test.id).endAt(test.id)).$asObject();
       return results;
@@ -44,7 +66,7 @@ angular
       if (!user){
         return
       }
-      console.log('loaddb')
+      console.log('loaddb', auth.user.id)
       db.questions = $firebase(fb.questions).$asObject();
       db.tests = $firebase(fb.tests.startAt(auth.user.id).endAt(auth.user.id)).$asObject();
 
@@ -96,12 +118,13 @@ angular
     var newQ = function(test){
       var id = generateUUID();
       var QRef = fb.questions.child(id)
-      QRef.set({
+      QRef.setWithPriority({
         id: id,
         ogTest: test.name,
         question: null,
+        user: auth.user.id,
         choices: [{value: ''}],
-      });
+      }, auth.user.id);
       var Q = $firebase(QRef).$asObject();
       return Q;
     }
@@ -134,6 +157,7 @@ angular
     return {
       data: db,
       getQuestion: getQuestion,
+      getQuestions: getQuestions,
       getTestQ: getTestQ,
       setTestQ: setTestQ,
       deleteTestQ: deleteTestQ,

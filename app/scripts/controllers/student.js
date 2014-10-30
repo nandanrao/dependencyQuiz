@@ -1,5 +1,5 @@
 angular.module('dependencyQuizApp')
-.controller("StudentCtrl", function($scope, db, studentHelpers, $stateParams, $firebase, currentTest, auth){
+.controller("StudentCtrl", function($scope, db, studentHelpers, $stateParams, $firebase, test, auth, questions){
 
   // Helpers for test runner  
   var isAnswered = studentHelpers.isAnswered
@@ -66,9 +66,10 @@ angular.module('dependencyQuizApp')
     var end = Date.now();
     $scope.testResults.end = end;
     $scope.$apply();
+    alert('all done!')
   }
 
-  $scope.currentTest = currentTest;
+  $scope.currentTest = test;
   $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
 
    // $scope.currentTestQ
@@ -84,7 +85,7 @@ angular.module('dependencyQuizApp')
   // $scope.currentQuestion
   Object.defineProperty($scope, 'currentQuestion', {
     get: function(){
-      return db.data.questions[$scope.currentTestQ.Q]
+      return questions[$scope.currentTestQ.Q]
     },
     set: function(q){
       $scope.currentTestQ.Q = q.id

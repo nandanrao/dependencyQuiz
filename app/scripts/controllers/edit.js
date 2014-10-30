@@ -11,6 +11,11 @@ angular.module('dependencyQuizApp')
 
     // __________Next/Dependency btn Dir________________________
 
+    console.log(db.data.questions);
+    db.data.questions.$save().then(function(){
+      console.log(db.data.questions)
+    })
+
     this.next = function(){
       if (!leaveAndCreate()) return;
       if ($scope.currentTestQ.next){
@@ -49,7 +54,8 @@ angular.module('dependencyQuizApp')
     this.newQuestionBtn = function(){
       var Q = db.newQ($scope.currentTest);
       Q.$loaded().then(function(){
-        $scope.currentQuestion = Q;  
+        $scope.currentQuestion = Q;
+        console.log(db.data.questions)
       })
       // console.log(Q)
     }
@@ -76,7 +82,6 @@ angular.module('dependencyQuizApp')
     }
 
     var hasFirst = function(test){
-      console.log(test);
       return _.find(test.testQuestions, 'first')
     }
 

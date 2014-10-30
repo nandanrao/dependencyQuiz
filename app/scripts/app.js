@@ -64,14 +64,15 @@ angular
         }
       })
       .state('tests', {
-        url: '/tests/:id',
+        url: '/tests/:test',
         templateUrl: 'views/student.html',
         controller: 'StudentCtrl as std',
         resolve: {
-          'currentTest': ['$firebase', '$stateParams', 'fb', function($firebase, $stateParams, fb){
-            var _testRef = fb.tests.child($stateParams.id);
-            var _fbtest = $firebase(_testRef).$asObject();
-            return _fbtest.$loaded()
+          'test': ['db', '$stateParams', function(db, $stateParams){
+            return db.getTest($stateParams.test)
+          }],
+          'questions': ['db', 'test', function(db, test){
+            return db.getQuestions(test)
           }]
         }
       })
@@ -83,6 +84,9 @@ angular
           'test': ['db', '$stateParams', function(db, $stateParams){
             console.log($stateParams.test)
             return db.getTest($stateParams.test)
+          }],
+          'questions': ['db', 'test', function(db, test){
+            return db.getQuestions(test)
           }],
           'testResults': ['$firebase', '$stateParams', 'fb', 'test', 'db', function($firebase, $stateParams, fb, test, db){
             return db.getTestResults(test).$loaded();           
