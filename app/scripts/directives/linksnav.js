@@ -18,7 +18,10 @@ angular.module('dependencyQuizApp')
         function createLink(id){
           var link = {};
           link.id = id;
-          link.question = db.getQuestion(id, $scope.currentTest).question;
+          var t = $scope.currentTest.testQuestions[id];
+          db.getQuestion(t.Q).$loaded().then(function(Q){
+            link.question = Q.question;
+          })
           return link
         }
 
@@ -42,14 +45,14 @@ angular.module('dependencyQuizApp')
             return true;
           };
           if ($scope.newQuestion.$valid){
-            db.data.questions.$save()
             return true
           }
           else {
             if (window.confirm('you really wanna go?')){
-              delete db.data.questions[$scope.currentQuestion.id];
+              $scope.unbind();
+              console.log($scope._currentQ)
+              db.deleteQuestion($scope.currentQuestion.id)
               db.deleteTestQ($scope.currentTestQ.id, $scope.currentTest);
-              db.data.questions.$save();
               return true
             }
             else {

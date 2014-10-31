@@ -5,8 +5,9 @@
     <img src="{{auth.user.thirdPartyUserData.picture}}" alt="" width='100px'>
   </div>
   <div class="testsTaken">
+  <h2>Tests I've Taken</h2>
     <ul class="testsTaken">
-      <li></li>
+      <li ng-repeat="result in myResults"><span class="date">({{ home.formatDate(result.start) }})</span><span>{{ result.test }}</span><span>view results</span> <span>retake!</span></li>
     </ul>
   </div>
   <div class="testsCreated">

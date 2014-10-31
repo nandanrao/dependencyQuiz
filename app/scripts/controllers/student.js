@@ -1,5 +1,5 @@
 angular.module('dependencyQuizApp')
-.controller("StudentCtrl", function($scope, db, studentHelpers, $stateParams, $firebase, test, auth, questions){
+.controller("StudentCtrl", function($scope, db, studentHelpers, fb, test, auth, questions){
 
   // Helpers for test runner  
   var isAnswered = studentHelpers.isAnswered
@@ -59,6 +59,11 @@ angular.module('dependencyQuizApp')
     db.createTestResults(test, auth.user, start).then(function(testResults){
       console.log('created!', testResults);
       testResults.$bindTo($scope, 'testResults');
+      // add to user
+        // console.log(auth);
+      var update = {};
+      update[testResults.id] = true;
+      fb.users.child(auth.user.id).child('results').update(update);  
     })
   };
 

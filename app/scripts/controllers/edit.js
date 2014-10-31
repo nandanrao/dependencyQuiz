@@ -7,14 +7,9 @@
  * # edit
  */
 angular.module('dependencyQuizApp')
-  .controller('EditCtrl', function ($scope, $stateParams, db, test){
+  .controller('EditCtrl', function ($scope, $stateParams, db, test, questions){
 
     // __________Next/Dependency btn Dir________________________
-
-    console.log(db.data.questions);
-    db.data.questions.$save().then(function(){
-      console.log(db.data.questions)
-    })
 
     this.next = function(){
       if (!leaveAndCreate()) return;
@@ -44,7 +39,6 @@ angular.module('dependencyQuizApp')
         return false
       }
       else {
-        db.data.questions.$save();
         return true;
       }
     };
@@ -53,23 +47,27 @@ angular.module('dependencyQuizApp')
 
     this.newQuestionBtn = function(){
       var Q = db.newQ($scope.currentTest);
-      Q.$loaded().then(function(){
-        $scope.currentQuestion = Q;
-        console.log(db.data.questions)
+      Q.$loaded().then(function(Q){
+        questions[Q.id] = Q;
+        $scope.currentQuestion = Q.id;
       })
       // console.log(Q)
     }
 
     this.oldQuestionBtn = function(){
       // console.log(db.data.questions)
-      $scope.oldQuestions = _.toArray(db.data.questions)
-      console.log($scope.oldQuestions)
+      db.getAllQuestions().$loaded().then(function(questions){
+        $scope.oldQuestions = questions;
+      })
       // show lookup form
     }
 
     // Used when picking an old question...
-    this.setQ = function(q){
-      $scope.currentQuestion = q;
+    this.setQ = function(Q){ 
+      db.getQuestion(Q.id).$loaded().then(function(Question){
+        questions[Question.id] = Question;
+        $scope.currentQuestion = Question.id;  
+      })
     }
 
     // window.onbeforeunload = function(e){
@@ -82,6 +80,7 @@ angular.module('dependencyQuizApp')
     }
 
     var hasFirst = function(test){
+      console.log(_.find(test.testQuestions, 'first'))
       return _.find(test.testQuestions, 'first')
     }
 
@@ -94,8 +93,7 @@ angular.module('dependencyQuizApp')
 
     // Initialize 
     test.$bindTo($scope, 'currentTest').then(function(obj){
-      $scope._currentTQ = hasFirst($scope.currentTest) ? hasFirst($scope.currentTest).id : createFirst($scope.currentTest).id;
-      $scope._currentQ;
+      $scope.currentTestQ = hasFirst($scope.currentTest) ? hasFirst($scope.currentTest).id : createFirst($scope.currentTest).id;
       $scope.oldQuestions;
     });
     
@@ -105,19 +103,29 @@ angular.module('dependencyQuizApp')
         return $scope.currentTest.testQuestions[$scope._currentTQ]
       },
       set: function(id){
-        console.log('set currentTestQ')
         $scope._currentTQ = id
+        $scope.currentQuestion = $scope.currentTestQ.Q
       }
     })
 
     // $scope.currentQuestion
     Object.defineProperty($scope, 'currentQuestion', {
       get: function(){
-        return db.data.questions[$scope.currentTestQ.Q]
+        return $scope._currentQ
       },
-      set: function(q){
-        $scope.currentTestQ.Q = q.id
-        console.log($scope.currentTestQ);
+      set: function(id){
+        $scope.unbind && $scope.unbind();
+        if (!id){
+          $scope._currentQ = undefined;
+        }
+        else {
+          var Q = questions[id];
+          console.log(id, questions)
+          Q.$bindTo($scope, '_currentQ').then(function(unbind){
+            $scope.unbind = unbind
+            $scope.currentTestQ.Q = Q.id
+          })
+        }
       }
     })
     

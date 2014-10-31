@@ -25,9 +25,15 @@ angular
         templateUrl: 'views/home.html',
         controller: 'HomeCtrl as home',
         resolve: {
-          'dbLoaded': ['db', function(db){
-            return db.loaded;
-          }]
+          'user': ['auth', function(auth){
+            return auth.$getCurrentUser();
+          }],
+          'myTests': ['db', 'user', function(db, user){
+            return db.myTests(user).$loaded();
+          }],
+          'myResults': ['db', 'user', function(db, user){
+            return db.myResults(user);
+          }],
         }
       })
       .state('welcome', {
@@ -55,11 +61,11 @@ angular
         templateUrl: 'views/edit.html',
         controller: 'EditCtrl as edit',
         resolve: {
-          'dbLoaded': ['db', function(db){
-            return db.loaded;
-          }],
           'test': ['db', '$stateParams', function(db, $stateParams){
             return db.getTest($stateParams.test)
+          }],
+          'questions': ['db', 'test', function(db, test){
+            return db.getQuestions(test)
           }]
         }
       })
@@ -82,14 +88,30 @@ angular
         controller: 'ResultsCtrl as results',
         resolve: {
           'test': ['db', '$stateParams', function(db, $stateParams){
-            console.log($stateParams.test)
             return db.getTest($stateParams.test)
           }],
           'questions': ['db', 'test', function(db, test){
             return db.getQuestions(test)
           }],
-          'testResults': ['$firebase', '$stateParams', 'fb', 'test', 'db', function($firebase, $stateParams, fb, test, db){
+          'testResults': ['test', 'db', function(test, db){
             return db.getTestResults(test).$loaded();           
+          }],
+          'users': ['testResults', 'db', 'fb', '$firebase', '$q', function(testResults, db, fb, $firebase, $q){
+            var userHash = function(arr){
+              return $q(function(resolve, reject){
+                var users = {};
+                arr.forEach(function(user){
+                  users[user.id] = user;
+                })
+                resolve(users)
+              })
+            };
+            var promises = []
+            testResults.forEach(function(result){
+              var user = $firebase(fb.users.child(result.user)).$asObject()
+              promises.push(user.$loaded());
+            })
+            return $q.all(promises).then(userHash)
           }]
         }
       })

@@ -41,16 +41,42 @@ angular
       var promises = [];
       console.log(test);
       _.forEach(test.testQuestions, function(tq){
-        if (!tq.Q) console.log('no question in this test question!')
-        var Q = $firebase(fb.questions.child(tq.Q)).$asObject();
-        promises.push(Q.$loaded())
+        if (!tq.Q) {
+          console.log('no question in this test question!')
+        }
+        else {
+          var Q = $firebase(fb.questions.child(tq.Q)).$asObject();
+          promises.push(Q.$loaded())
+        }
       })
       return $q.all(promises).then(questionsDbBuilder)   
     }
 
+    var getAllQuestions = function(){
+      var allQuestions = $firebase(fb.questions.startAt(auth.user.id).endAt(auth.user.id)).$asArray();
+      return allQuestions;
+    }
+
     var getTestResults = function(test){
-      var results = $firebase(fb.testResults.startAt(test.id).endAt(test.id)).$asObject();
+      var results = $firebase(fb.testResults.startAt(test.name).endAt(test.name)).$asObject();
+      console.log('in db results', results)
       return results;
+    }
+
+    var myResults = function(user){
+      var ref = fb.users.child(user.id).child('results');
+      var results = $firebase(ref).$asArray();
+      
+      function testResultsFinder(results){
+        var promises = [];
+        _.forEach(results, function(result){
+          var loaded = $firebase(fb.testResults.child(result.$id)).$asObject().$loaded();
+          promises.push(loaded)
+        })  
+        return $q.all(promises)  
+      }
+
+      return results.$loaded().then(testResultsFinder)
     }
 
     var getTest = function(testId){
@@ -61,13 +87,20 @@ angular
 
     var loaded = auth.$getCurrentUser().then(loadDB)
 
+    var myTests = function(user){
+      var tests = $firebase(fb.tests.startAt(user.id).endAt(user.id)).$asObject();
+      console.log(tests);
+      return tests;
+    }
+
+
     function loadDB(user){
       console.log('ran loadDB')
       if (!user){
         return
       }
       console.log('loaddb', auth.user.id)
-      db.questions = $firebase(fb.questions).$asObject();
+      // db.questions = $firebase(fb.questions).$asObject();
       db.tests = $firebase(fb.tests.startAt(auth.user.id).endAt(auth.user.id)).$asObject();
 
       // $rootScope.tests = db.tests;
@@ -75,12 +108,13 @@ angular
       // lookup users tests
       // db.testsTaken = $firebase(user.testResults)
       // $rootScope.testsTaken = db.testsTaken
-      return $q.all([db.tests.$loaded(), db.questions.$loaded()])  
+      return db.tests.$loaded()  
     }
 
-    var getQuestion = function(t_id, test) {
-      var t = getTestQ(t_id, test)
-      return db.questions[t.Q]
+    var getQuestion = function(id) {
+      var Q = $firebase(fb.questions.child(id)).$asObject(); 
+      console.log(Q);
+      return Q
     };
 
     var getTestQ = function(id, test){
@@ -104,6 +138,10 @@ angular
       })
     }
 
+    var deleteQuestion = function(id){
+      fb.questions.child(id).remove();
+    }
+
     // ID helper function
     function generateUUID(){
       var d = Date.now();
@@ -123,7 +161,7 @@ angular
         ogTest: test.name,
         question: null,
         user: auth.user.id,
-        choices: [{value: ''}],
+        choices: [{false: false}],
       }, auth.user.id);
       var Q = $firebase(QRef).$asObject();
       return Q;
@@ -161,12 +199,16 @@ angular
       getTestQ: getTestQ,
       setTestQ: setTestQ,
       deleteTestQ: deleteTestQ,
+      deleteQuestion: deleteQuestion,
       newTestQ: newTestQ,
       newQ: newQ,
       newTest: newTest,
       getTest: getTest,
       getTestResults : getTestResults,
+      myResults: myResults,
+      myTests: myTests,
       createTestResults: createTestResults,
+      getAllQuestions: getAllQuestions,
       // promise that resolves when the db has loaded...
       loaded: loaded,
     }

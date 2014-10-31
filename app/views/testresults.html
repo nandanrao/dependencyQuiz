@@ -1,8 +1,17 @@
-<p>This is the testResults view.</p>
-<ul>
-  <li ng-repeat="result in testResults">{{ result.user }}
-    <ul>
-      <li ng-repeat="answer in result.results">{{ answer.correct }}</li>
-    </ul>
-  </li>
-</ul>
+<div class="testResults">
+  <ul>
+    <li accordion ng-click="click()" ng-repeat="result in testResults">
+      <img src="{{ users[result.user].pic}} " width="50px" alt="">
+      <span>
+      {{ users[result.user].name }}  
+      </span>
+      <span>
+      {{ results.formatDate(result.start) }}
+      </span>
+      <div class="answers">
+        <div class="answer" ng-repeat="answer in result.results" ng-style="results.answerStyle(answer)"></div>
+      </div>
+      <div individual-results="{{ result }}"></div>
+    </li>
+  </ul>
+</div>
