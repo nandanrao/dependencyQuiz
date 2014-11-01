@@ -1,4 +1,13 @@
-<div ng-if="expanded">
-  <p>This is the individualResults view.</p>
-  <p>{{ results }}</p>
+<p>This is the individualResults view.</p>
+<h2>{{ users[result.user].name }}</h2>
+<button class="close" ng-click="click()">close</button>
+<div class="tree">
+  <div class="answer" ng-style="results.expAnswerStyle(answer)" ng-repeat="answer in result.results | orderObjectBy: 'submitTime'">
+      <div class="line" ng-style="results.lineStyle(answer)"></div>
+      <div class="question">
+        <h3>{{ questions[answer.Q].question }}</h3>
+        <p ng-if="!answer.correct" class="wrongAnswer">blah<p>
+        <p ng-if="!answer.correct" class="correctAnswer">blah<p>
+      </div>
+  </div>
 </div>

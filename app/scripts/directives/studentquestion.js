@@ -16,20 +16,16 @@ angular.module('dependencyQuizApp')
       controller: function($scope, $attrs, studentHelpers){
         // Helpers for selecting answers
         var isAnswered = studentHelpers.isAnswered
-        this.style = function(choice){
-          return choice.chosen ? {'background-color': '#F99'} : {'background-color': 'default'}
+        this.style = function(i){
+          if (!$scope.currentResults) return;
+          return i === $scope.currentResults.answer ? {'background-color': '#F99'} : {'background-color': 'default'}
         }
-        this.choose = function(question, choice){
-          var pickedOption = isAnswered(question);
-          choice.chosen ? choice.chosen = false : choice.chosen = true;
-          if (pickedOption) {
-            pickedOption.chosen = false;
-          }  
+        this.choose = function(i){
+          $scope.currentResults.answer = i;
         }
         // On submission of a question!
-        this.submit = function(question){
-          console.log('emit')
-          $scope.$emit('submit', question)
+        this.submit = function(results){
+          $scope.$emit('submit', results)
         };
       }
     };

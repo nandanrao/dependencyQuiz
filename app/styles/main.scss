@@ -308,16 +308,76 @@ div.testsCreated {
   }
 }
 
+$tree-border: 2px dotted #AAA;
+
 div.testResults {
+  ul {
+    padding: 0;
+  }
+  li {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1em auto;
+    padding: 5px 0;
+    border-top: 1px dotted #CCC;
+    border-bottom: 1px dotted #CCC;
+    &>div {
+      width: 100%;
+    }
+    div.tree {
+      // border-left: $tree-border;
+      width: 100%;
+      margin-left: 2em;
+      div.answer {
+        display: flex;
+        align-items: center;
+        border-left: $tree-border;
+      }
+      div.question {
+        display: inline-block;
+        margin: 1em 0 1em 1em;
+        h3 {
+          margin: 0;
+        }
+        p {
+          margin: 0 0 0 1em;
+          &.correctAnswer {
+            color: #999;
+          }
+        }
+      }
+      div.line {
+        display: inline-block;
+        width: 20px;
+        height: 0;
+        border-top: $tree-border;
+      }
+    }
+  }
+  div.user {
+    display: inline-block;
+    display: flex;
+    width: 35%;
+    align-items: center;
+  }
   div.answers {
     display: inline-block;
-    width: 100%;
-    height: 30px;
+    width: 50%;
+    height: 15px;
     display: flex;
     div.answer {
       width: 20px;
-      height: 66%;
       align-self: flex-end;
+      border-top: 4px solid;
+      margin-right: 4px;
     }
+  }
+  button.close {
+    position: absolute;
+    top: 1em;
+    right: 1em;
   }
 }

@@ -1,6 +1,8 @@
 <div class="testResults">
   <ul>
-    <li accordion ng-click="click()" ng-repeat="result in testResults">
+  <li accordion ng-repeat="result in testResults">
+
+    <div ng-if="!expanded" class="user" ng-click="click()" >
       <img src="{{ users[result.user].pic}} " width="50px" alt="">
       <span>
       {{ users[result.user].name }}  
@@ -8,10 +10,14 @@
       <span>
       {{ results.formatDate(result.start) }}
       </span>
-      <div class="answers">
-        <div class="answer" ng-repeat="answer in result.results" ng-style="results.answerStyle(answer)"></div>
-      </div>
-      <div individual-results="{{ result }}"></div>
-    </li>
+    </div>
+    <div ng-if="!expanded" class="answers" ng-click="click()" >
+      <div class="answer" ng-repeat="answer in result.results | orderObjectBy: 'submitTime'" ng-style="results.answerStyle(answer)"></div>
+    </div>
+    
+    <div ng-if="expanded" individual-results> </div>
+
+  </li>
+    
   </ul>
 </div>

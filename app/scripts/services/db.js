@@ -13,19 +13,6 @@ angular
     
     var db = {};
 
-    var createTestResults = function(test, user, start){
-      var id = generateUUID();
-      var resultsRef = fb.testResults.child(id);
-      resultsRef.setWithPriority({
-        id: id,
-        test: test.name,
-        user: user.id,
-        start: start
-      }, test.name)
-      var results = $firebase(resultsRef).$asObject();
-      return results.$loaded();
-    }
-
      var getQuestions = function(test){
       // Helper function to build questions db!
       function questionsDbBuilder(arr){
@@ -59,7 +46,7 @@ angular
 
     var getTestResults = function(test){
       var results = $firebase(fb.testResults.startAt(test.name).endAt(test.name)).$asObject();
-      console.log('in db results', results)
+      console.log('in db results', results, test.name)
       return results;
     }
 
@@ -189,6 +176,28 @@ angular
       }, auth.user.id)
       var test = $firebase(testRef);
       return test.$asObject();
+    }
+
+    var createTestResults = function(test, user, start){
+      var id = generateUUID();
+      var startingTQ = _.find(test.testQuestions, {'first' : true});
+      // initialize results hash
+      var startingResults = {};
+      startingResults[startingTQ.id] = {
+        Q: startingTQ.Q,
+        answer: false
+      }
+      // --------------------
+      var resultsRef = fb.testResults.child(id);
+      resultsRef.setWithPriority({
+        id: id,
+        test: test.name,
+        user: user.id,
+        start: start,
+        results: startingResults,
+      }, test.name)
+      var results = $firebase(resultsRef).$asObject();
+      return results.$loaded();
     }
 
 

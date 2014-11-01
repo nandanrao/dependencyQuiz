@@ -8,11 +8,14 @@
  * Controller of the dependencyQuizApp
  */
 angular.module('dependencyQuizApp')
-  .controller('ResultsCtrl', function ($scope, db, test, testResults, users, $state, formatDate) {
+  .controller('ResultsCtrl', function ($scope, db, test, testResults, users, $state, formatDate, questions) {
 
     console.log('test results', testResults)
 
+    var test = test;
+
     var levels = function(tq){
+      console.log(tq);
       var level = 1;
       (function recurser(tq){
         if (!tq.parent) return;
@@ -22,7 +25,9 @@ angular.module('dependencyQuizApp')
       return level
     }
 
-    this.levels = levels;
+    // this.levels = levels;
+
+    $scope.questions = questions
     
     $scope.testLevels = _.reduce(_.map(test.testQuestions, levels)
       ,function(a, b){
@@ -37,20 +42,47 @@ angular.module('dependencyQuizApp')
 
     this.formatDate = formatDate;
 
-    this.answerStyle = function(ans){
-      var color, height, width;
+    var green = '#0C6';
+    var red = '#F33';
 
-      color = ans.correct ? 'green' : 'red'
-      width = 1/$scope.testSize*100 + '%'
+    this.answerStyle = function(ans){
+      console.log(ans)
+      var tq = _.find(test.testQuestions, { Q: ans.Q })
+
+      var color, height, width;
+      color = ans.correct ? green : red;
+      width = 1/$scope.testSize*100 + '%';
+      height = ($scope.testLevels / levels(tq))/$scope.testLevels *100 + '%';
 
       return {
-        "background-color": color,
-        "width": width
+        "border-color": color,
+        "width": width,
+        "height": height
       }
     }
 
-    // this.showInd = function(user){
+    this.lineStyle = function(ans){
+      var tq = _.find(test.testQuestions, { Q: ans.Q })
       
-    // }
+      var color, width;
+      color = ans.correct ? green : red;
+      width = Math.pow((levels(tq)/$scope.testLevels*10), 2.5) + 'px';
+
+      return {
+        "width" : width,
+        "border-color": color,
+      }
+    }
+
+    this.expAnswerStyle = function(ans){
+
+      var color
+      color = ans.correct ? green : red;
+      return {
+        "border-color": color,
+        "color": color,
+      }
+
+    }
 
   });

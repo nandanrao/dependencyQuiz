@@ -1,37 +1,32 @@
 angular.module('dependencyQuizApp')
-.controller("StudentCtrl", function($scope, db, studentHelpers, fb, test, auth, questions){
+.controller("StudentCtrl", function($scope, db, fb, test, auth, questions, $q){
 
-  // Helpers for test runner  
-  var isAnswered = studentHelpers.isAnswered
-  var isCorrect = function(question){
-    var ans = isAnswered(question);
+  // Helpers for test runner
+  var isCorrect = function(results){
+    var ans = questions[results.Q].choices[results.answer] 
     return ans.correct ? true : false;
   }
   // Test runner!
   var runner = function(question, cb){
-
+    console.log('running', question)
     // Promise for submission
-    var submitted = new Promise(function(resolve, reject){
-      $scope.$on('submit', function(e, obj){
-        console.log('recieve', e, obj)
-        resolve(obj);
+    var submitted = $q(function(resolve, reject){
+      $scope.$on('submit', function(e, results){
+        console.log('recieve', e, results)
+        resolve(results);
       })
     });
     // set question as current question & use that in this function!
     $scope.currentTestQ = question;
     question = $scope.currentTestQ;
-        console.log('running', question)
+        
     $scope.$applyAsync();
     // Run after submission!
-    submitted.then(function(Q){
-      $scope.testResults.results = $scope.testResults.results || [];
-      console.log(Q.id, isAnswered(Q), isCorrect(Q));
-      $scope.testResults.results.push({
-       question: Q.id,
-       answer: isAnswered(Q).value, 
-       correct: isCorrect(Q), 
-      });
-      if (!isCorrect(Q) && question.dependency){
+    submitted.then(function(results){
+      console.log(isCorrect(results))
+      $scope.currentResults.correct = isCorrect(results);
+      $scope.currentResults.submitTime = Date.now();
+      if (!isCorrect(results) && question.dependency){
         runner(question.dependency, function(){
           if (question.next) {
             runner(question.next, cb)
@@ -53,37 +48,55 @@ angular.module('dependencyQuizApp')
   // Init
   $scope.letters = ['a','b','c','d','e','f','g','h','i'];
 
+  var setTestResultsOnUser = function(testResults){
+    var update = {};
+    update[testResults.id] = true;
+    fb.users.child(auth.user.id).child('results').update(update);  
+  }
+
   this.startTest = function(test){
-    $scope.testResults = true;
     var start = Date.now();
     db.createTestResults(test, auth.user, start).then(function(testResults){
-      console.log('created!', testResults);
-      testResults.$bindTo($scope, 'testResults');
-      // add to user
-        // console.log(auth);
-      var update = {};
-      update[testResults.id] = true;
-      fb.users.child(auth.user.id).child('results').update(update);  
+      // add test results to user
+      setTestResultsOnUser(testResults)
+      // Bind test results to scope
+      testResults.$bindTo($scope, 'testResults')
     })
   };
 
   var endTest = function(){
     var end = Date.now();
     $scope.testResults.end = end;
-    $scope.$apply();
     alert('all done!')
+  }
+
+  var Results = function(){
+    this.Q = $scope.currentQuestion.id;
+    this.answer = false;
   }
 
   $scope.currentTest = test;
   $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
 
-   // $scope.currentTestQ
+  
+  Object.defineProperty($scope, 'currentResults', {
+    get: function(){
+      return $scope.testResults.results[$scope.currentTestQ.id]
+    }
+  })
+
+  // $scope.currentTestQ
   Object.defineProperty($scope, 'currentTestQ', {
     get: function(){
       return $scope.currentTest.testQuestions[$scope._currentTQ]
     },
     set: function(id){
       $scope._currentTQ = id
+      if ($scope.testResults){
+        console.log($scope.testResults)
+        $scope.testResults.results[id] = $scope.testResults.results[id] || new Results;
+      }
+      console.count('setting')
     }
   })
 
