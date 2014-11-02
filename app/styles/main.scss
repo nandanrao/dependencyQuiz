@@ -86,6 +86,8 @@ textarea {
 
 $font: 'Lato';
 $accent: #f99;
+$correct: #0C6;
+$wrong: #F33;
 
 body {
   font-family: $font;
@@ -308,7 +310,7 @@ div.testsCreated {
   }
 }
 
-$tree-border: 2px dotted #AAA;
+$tree-border: 2px dotted;
 
 div.testResults {
   ul {
@@ -328,32 +330,39 @@ div.testResults {
       width: 100%;
     }
     div.tree {
-      // border-left: $tree-border;
       width: 100%;
       margin-left: 2em;
       div.answer {
         display: flex;
         align-items: center;
         border-left: $tree-border;
-      }
-      div.question {
-        display: inline-block;
-        margin: 1em 0 1em 1em;
-        h3 {
-          margin: 0;
+        &.wrong {
+          border-color: $wrong;
+          color: $wrong;
         }
-        p {
-          margin: 0 0 0 1em;
-          &.correctAnswer {
-            color: #999;
+        &.correct {
+          border-color: $correct;
+          color: $correct;
+        }
+        div.question {
+          display: inline-block;
+          margin: 1em 0 1em 1em;
+          h3 {
+            margin: 0;
+          }
+          p {
+            margin: 0 0 0 1em;
+            &.correctAnswer {
+              color: #999;
+            }
           }
         }
-      }
-      div.line {
-        display: inline-block;
-        width: 20px;
-        height: 0;
-        border-top: $tree-border;
+        div.line {
+          display: inline-block;
+          width: 20px;
+          height: 0;
+          border-top: $tree-border;
+        }
       }
     }
   }
@@ -366,13 +375,19 @@ div.testResults {
   div.answers {
     display: inline-block;
     width: 50%;
-    height: 15px;
+    height: 30px;
     display: flex;
     div.answer {
       width: 20px;
       align-self: flex-end;
       border-top: 4px solid;
       margin-right: 4px;
+      &.correct {
+        border-color: $correct;
+      }
+      &.wrong {
+        border-color: $wrong;
+      }
     }
   }
   button.close {

@@ -13,7 +13,7 @@ angular.module('dependencyQuizApp')
       restrict: 'A',
       scope: true,
       controllerAs: 'linksNav',
-      controller: function($scope, $attrs, db){
+      controller: function($scope, $attrs, db, leave){
 
         function createLink(id){
           var link = {};
@@ -38,31 +38,9 @@ angular.module('dependencyQuizApp')
           return arr;
         };
 
-        // Helper function to check before leaving a page
-        function leave(){
-          if(!$scope.currentQuestion){
-            db.deleteTestQ($scope.currentTestQ.id, $scope.currentTest);
-            return true;
-          };
-          if ($scope.newQuestion.$valid){
-            return true
-          }
-          else {
-            if (window.confirm('you really wanna go?')){
-              $scope.unbind();
-              console.log($scope._currentQ)
-              db.deleteQuestion($scope.currentQuestion.id)
-              db.deleteTestQ($scope.currentTestQ.id, $scope.currentTest);
-              return true
-            }
-            else {
-              return false
-            }
-          }
-        };
 
         this.show = function(question){
-          if (leave()) {
+          if (leave($scope)) {
             $scope.currentTestQ = question.id;
           }
         };

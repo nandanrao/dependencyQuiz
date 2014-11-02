@@ -12,10 +12,10 @@
       </span>
     </div>
     <div ng-if="!expanded" class="answers" ng-click="click()" >
-      <div class="answer" ng-repeat="answer in result.results | orderObjectBy: 'submitTime'" ng-style="results.answerStyle(answer)"></div>
+      <div class="answer" data-submittime="{{ answer.submitTime }}" data-question="{{ questions[answer.Q].question }}" ng-class="answer.correct ? 'correct' : 'wrong'" ng-repeat="answer in result.results | orderObjectBy: 'submitTime'" ng-style="results.answerStyle(answer)"></div>
     </div>
     
-    <div ng-if="expanded" individual-results> </div>
+    <div individual-results ng-if="expanded" username="{{ users[result.user].name }}"> </div>
 
   </li>
     

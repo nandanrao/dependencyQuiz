@@ -7,7 +7,7 @@
  * # edit
  */
 angular.module('dependencyQuizApp')
-  .controller('EditCtrl', function ($scope, $stateParams, db, test, questions){
+  .controller('EditCtrl', function ($scope, $stateParams, db, leave, test, questions){
 
     // __________Next/Dependency btn Dir________________________
 
@@ -70,10 +70,27 @@ angular.module('dependencyQuizApp')
       })
     }
 
-    // window.onbeforeunload = function(e){
-    //   if (leave())
-    //   confirm('youre leaving!!')
-    // }
+    $scope.$on('$locationChangeStart', function(event, next, current) {
+      if (leave($scope)) return;
+    });
+
+    window.onunload = function(e){
+      if (!leave($scope)) {
+        db.deleteQuestion($scope.currentQuestion.id); 
+        db.deleteTestQAsync($scope.currentTestQ.id, $scope.currentTest);
+      }
+    };
+
+    window.onbeforeunload = function(e){
+      if (!leave($scope)){
+        return 'you sure, this question is unsaved!'
+      }
+    }
+
+    $scope.$on('$destroy', function() {
+        delete window.onbeforeunload;
+        delete window.onunload;
+    });
 
     this.submit = function(){
       console.log($scope.nextQuestions)
@@ -120,7 +137,6 @@ angular.module('dependencyQuizApp')
         }
         else {
           var Q = questions[id];
-          console.log(id, questions)
           Q.$bindTo($scope, '_currentQ').then(function(unbind){
             $scope.unbind = unbind
             $scope.currentTestQ.Q = Q.id

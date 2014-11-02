@@ -7,82 +7,34 @@
  * # ResultsCtrl
  * Controller of the dependencyQuizApp
  */
+
 angular.module('dependencyQuizApp')
-  .controller('ResultsCtrl', function ($scope, db, test, testResults, users, $state, formatDate, questions) {
-
-    console.log('test results', testResults)
-
-    var test = test;
-
-    var levels = function(tq){
-      console.log(tq);
-      var level = 1;
-      (function recurser(tq){
-        if (!tq.parent) return;
-        level++
-        recurser(test.testQuestions[tq.parent])
-      })(tq)
-      return level
-    }
-
-    // this.levels = levels;
-
-    $scope.questions = questions
-    
-    $scope.testLevels = _.reduce(_.map(test.testQuestions, levels)
-      ,function(a, b){
-        return a > b ? a : b
-      });
-
-    $scope.testSize = _.size(test.testQuestions);
-
-    $scope.users = users
+  .controller('ResultsCtrl', function ($scope, db, helpers, $state, test, testResults, users, questions) {
 
     testResults.$bindTo($scope, 'testResults')
+    $scope.test = test;
+    $scope.questions = questions;
+    $scope.users = users;
+    $scope.testLevels = helpers.testLevels($scope.test)
+    $scope.testSize = _.size(test.testQuestions);
+    this.formatDate = helpers.formatDate;
 
-    this.formatDate = formatDate;
-
-    var green = '#0C6';
-    var red = '#F33';
+    testResults.$inst().$ref().on('child_added', function(snap){
+      console.log(snap.val());
+      var result = snap.val();
+      db.getUserFromResults(result).$loaded().then(function(user){
+        $scope.users[user.id] = user;
+      })
+    })
 
     this.answerStyle = function(ans){
-      console.log(ans)
-      var tq = _.find(test.testQuestions, { Q: ans.Q })
-
-      var color, height, width;
-      color = ans.correct ? green : red;
-      width = 1/$scope.testSize*100 + '%';
-      height = ($scope.testLevels / levels(tq))/$scope.testLevels *100 + '%';
-
+      var tq = _.find($scope.test.testQuestions, { Q: ans.Q })
+      var width = 1/$scope.testSize*100 + '%';
+      var height = (($scope.testLevels + 1 - helpers.levels(tq, $scope.test))/$scope.testLevels) *100 + '%';
       return {
-        "border-color": color,
         "width": width,
         "height": height
       }
-    }
-
-    this.lineStyle = function(ans){
-      var tq = _.find(test.testQuestions, { Q: ans.Q })
-      
-      var color, width;
-      color = ans.correct ? green : red;
-      width = Math.pow((levels(tq)/$scope.testLevels*10), 2.5) + 'px';
-
-      return {
-        "width" : width,
-        "border-color": color,
-      }
-    }
-
-    this.expAnswerStyle = function(ans){
-
-      var color
-      color = ans.correct ? green : red;
-      return {
-        "border-color": color,
-        "color": color,
-      }
-
     }
 
   });

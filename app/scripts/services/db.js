@@ -50,6 +50,28 @@ angular
       return results;
     }
 
+    var getUserFromResults = function(result){
+      return $firebase(fb.users.child(result.user)).$asObject()
+    }
+
+    var getTakersOfTest = function(testResults){
+      var userHash = function(arr){
+        return $q(function(resolve, reject){
+          var users = {};
+          arr.forEach(function(user){
+            users[user.id] = user;
+          });
+          resolve(users)
+        })
+      };
+      var promises = []
+      testResults.forEach(function(result){
+        var user = getUserFromResults(result);
+        promises.push(user.$loaded());
+      })
+      return $q.all(promises).then(userHash)
+    }
+
     var myResults = function(user){
       var ref = fb.users.child(user.id).child('results');
       var results = $firebase(ref).$asArray();
@@ -72,35 +94,15 @@ angular
       return test.$loaded();
     }
 
-    var loaded = auth.$getCurrentUser().then(loadDB)
-
     var myTests = function(user){
       var tests = $firebase(fb.tests.startAt(user.id).endAt(user.id)).$asObject();
       console.log(tests);
       return tests;
     }
 
-
-    function loadDB(user){
-      console.log('ran loadDB')
-      if (!user){
-        return
-      }
-      console.log('loaddb', auth.user.id)
-      // db.questions = $firebase(fb.questions).$asObject();
-      db.tests = $firebase(fb.tests.startAt(auth.user.id).endAt(auth.user.id)).$asObject();
-
-      // $rootScope.tests = db.tests;
-      // $rootScope.questions = db.questions;
-      // lookup users tests
-      // db.testsTaken = $firebase(user.testResults)
-      // $rootScope.testsTaken = db.testsTaken
-      return db.tests.$loaded()  
-    }
-
     var getQuestion = function(id) {
+      console.log('get question');
       var Q = $firebase(fb.questions.child(id)).$asObject(); 
-      console.log(Q);
       return Q
     };
 
@@ -116,14 +118,38 @@ angular
       test.testQuestions[q.id] = q;
     }
 
-    var deleteTestQ = function(id, test){
+    var deleteTestQSync = function(id, test){
       delete test.testQuestions[id];
       _.forOwn(test.testQuestions, function(v, k, o){
         o[k] = _.mapValues(v, function(v, k){
           return v === id ? null : v
         });
       })
-    }
+    };
+
+    var deleteTestQAsync = function(id, test){
+      var questions = fb.tests.child(test.name).child('testQuestions')
+      var tqRef = questions.child(id); 
+
+      // delete the reference in its previous
+      var prev = tqRef.child('previous');
+      if (prev) {
+        prev.once('value', function(snap){
+          prev = snap.val();
+          questions.child(prev).child('next').remove();
+        })
+      };
+      // delete the reference in its parent
+      var parent = tqRef.child('parent');
+      if (parent){
+        parent.once('value', function(snap){
+          parent = snap.val();
+          questions.child(parent).child('dependency').remove();
+        })
+      }
+      // delete the actual question
+      tqRef.remove();
+    };
 
     var deleteQuestion = function(id){
       fb.questions.child(id).remove();
@@ -207,19 +233,20 @@ angular
       getQuestions: getQuestions,
       getTestQ: getTestQ,
       setTestQ: setTestQ,
-      deleteTestQ: deleteTestQ,
+      deleteTestQSync: deleteTestQSync,
+      deleteTestQAsync: deleteTestQAsync,
       deleteQuestion: deleteQuestion,
       newTestQ: newTestQ,
       newQ: newQ,
       newTest: newTest,
       getTest: getTest,
       getTestResults : getTestResults,
+      getUserFromResults: getUserFromResults,
+      getTakersOfTest: getTakersOfTest,
       myResults: myResults,
       myTests: myTests,
       createTestResults: createTestResults,
       getAllQuestions: getAllQuestions,
-      // promise that resolves when the db has loaded...
-      loaded: loaded,
     }
 
   })

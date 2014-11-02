@@ -8,21 +8,12 @@
  * Controller of the dependencyQuizApp
  */
 angular.module('dependencyQuizApp')
-  .controller('HomeCtrl', function ($state, $firebase, $scope, auth, $location, db, myResults, myTests, formatDate) {
+  .controller('HomeCtrl', function ($state, $firebase, $scope, auth, $location, db, helpers, myResults, myTests) {
 
   $scope.auth = auth;
-
   $scope.tests = myTests;
-
   $scope.myResults = myResults;
-
-  this.formatDate = formatDate;
-
-  // $scope.myResults = myResults;
-  // var date = new Date(myResults[0].start)
-  // var pretty = date.toLocaleString()
-  // console.log(pretty)
-  // console.log(Date.parse(myResults[0].start))
+  this.formatDate = helpers.formatDate;
 
   this.logout = function(){
     console.log('logging out')
@@ -47,4 +38,4 @@ angular.module('dependencyQuizApp')
     $state.go('results', {test: test.name})
   }
 
-  });
+});

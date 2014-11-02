@@ -14,12 +14,22 @@
       restrict: 'EA',
       templateUrl: 'views/individualresults.html',
       controllerAs: 'individual',
-      controller: function($scope, $attrs){
-        console.log("here")
-        this.button = function(){
-          console.log($attrs.individualResults)
+      scope: true,
+      controller: function($scope, $attrs, helpers){
+        
+        // creates the tree line/graphic
+        this.lineStyle = function(ans){
+          var tq = _.find($scope.test.testQuestions, { Q: ans.Q })
+          var width = Math.pow((helpers.levels(tq, $scope.test)/$scope.testLevels*10), 2.3) + 'px';
+          return {
+            "width" : width,
+          }
         }
+
       },
+      link: function(scope, el, attrs, ctrl){
+        scope.username = attrs.username
+      }
     }
   });
 

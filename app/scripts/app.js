@@ -96,22 +96,8 @@ angular
           'testResults': ['test', 'db', function(test, db){
             return db.getTestResults(test).$loaded();           
           }],
-          'users': ['testResults', 'db', 'fb', '$firebase', '$q', function(testResults, db, fb, $firebase, $q){
-            var userHash = function(arr){
-              return $q(function(resolve, reject){
-                var users = {};
-                arr.forEach(function(user){
-                  users[user.id] = user;
-                })
-                resolve(users)
-              })
-            };
-            var promises = []
-            testResults.forEach(function(result){
-              var user = $firebase(fb.users.child(result.user)).$asObject()
-              promises.push(user.$loaded());
-            })
-            return $q.all(promises).then(userHash)
+          'users': ['testResults', 'db', function(testResults, db){
+            return db.getTakersOfTest(testResults)
           }]
         }
       })
@@ -134,7 +120,6 @@ angular
 })
 .filter('orderObjectBy', function() {
   return function (items, field, reverse) {
-    console.log(items, field)
     var filtered = [];
     angular.forEach(items, function(item) {
       filtered.push(item);
@@ -148,8 +133,12 @@ angular
       var reducedB = field.split('.').reduce(index, b);
       if (reducedA === reducedB) {
         comparator = 0;
-      } else {
-        comparator = (reducedA > reducedB ? 1 : -1);
+      } 
+      else if (!reducedA || reducedA > reducedB){
+        comparator = 1
+      }
+      else {
+        comparator = -1
       }
       return comparator;
     });

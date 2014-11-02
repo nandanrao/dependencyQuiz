@@ -45,9 +45,6 @@ angular.module('dependencyQuizApp')
     })
   };
 
-  // Init
-  $scope.letters = ['a','b','c','d','e','f','g','h','i'];
-
   var setTestResultsOnUser = function(testResults){
     var update = {};
     update[testResults.id] = true;
@@ -75,10 +72,11 @@ angular.module('dependencyQuizApp')
     this.answer = false;
   }
 
+  // Init
+  $scope.letters = ['a','b','c','d','e','f','g','h','i'];
   $scope.currentTest = test;
   $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
 
-  
   Object.defineProperty($scope, 'currentResults', {
     get: function(){
       return $scope.testResults.results[$scope.currentTestQ.id]
