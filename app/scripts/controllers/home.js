@@ -15,6 +15,10 @@ angular.module('dependencyQuizApp')
   $scope.myResults = myResults;
   this.formatDate = helpers.formatDate;
 
+  this.hasTests= function(tests){
+    return _.size($scope.tests) > 4
+  };
+
   this.logout = function(){
     console.log('logging out')
     auth.$logout();

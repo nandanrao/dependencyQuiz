@@ -9,8 +9,7 @@
   <div class="newTest">
     <button class="newTest" ng-click="home.newTest()">new test</button>
   </div>
-  <div class="testsCreated">
-    <!-- <h2 class="testsCreated">Tests I've Created</h2> -->
+  <div class="testsCreated" ng-if="home.hasTests(tests)">
     <ul class="testsCreated">
       <li ng-repeat="test in tests">
         <span class="title">{{ test.name }}</span>

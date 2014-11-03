@@ -18,7 +18,11 @@ angular
     'firebase',
     'ui.router'
   ])
-  .config(function ($stateProvider, $urlRouterProvider) {
+  .config(function ($stateProvider, $locationProvider, $urlRouterProvider) {
+    $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
+    });
     $stateProvider
       .state('home', {
         url: '/',
