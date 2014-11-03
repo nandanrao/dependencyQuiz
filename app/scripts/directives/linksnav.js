@@ -7,7 +7,7 @@
  * # linksNav
  */
 angular.module('dependencyQuizApp')
-  .directive('linksNav', function () {
+  .directive('linksNav', function (Gradient) {
     return {
       templateUrl: 'views/linksNav.html',
       restrict: 'A',
@@ -30,7 +30,7 @@ angular.module('dependencyQuizApp')
           function Traverse(question){
             if (!question[property]) return;
             var id = question[property]
-            arr.unshift(createLink(id));
+            arr.push(createLink(id));
             var t = db.getTestQ(id, $scope.currentTest)
             Traverse(t);
           }
@@ -44,6 +44,37 @@ angular.module('dependencyQuizApp')
             $scope.currentTestQ = question.id;
           }
         };
+
+        this.style = function(arr, i){
+          var gradient = new Gradient;
+
+          // var h, s, l, a;
+          // h = 0;
+          // s = 90 + '%';
+          // l = 45 + '%';
+          // a = 0.8;
+
+          gradient.setSpectrum('#79c6ff', '#8aee7e')
+          var inc = 100/arr.length;
+
+          var color = gradient.colourAt(inc*i);
+          console.log(color)
+
+          return {
+            "color": '#' + color
+          }
+        }
+
+        var orderKey = {
+          dependency: 'reverse',
+          parent: '',
+          next: 'reverse',
+          previous: ''
+        }
+
+        $scope.order = function(){
+          return orderKey[$attrs.linksNav]
+        }
 
         $scope.$watch('currentTestQ', function(curr, old){
           var str = $attrs.linksNav;

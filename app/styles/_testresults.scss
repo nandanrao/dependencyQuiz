@@ -1,0 +1,114 @@
+$tree-border: 2px dotted;
+
+div.testResults {
+  h2 {
+    font-weight: 300;
+  }
+  ul {
+    margin-top: 2em;
+    padding: 0;
+  }
+  li {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1em auto;
+    padding: 5px 0;
+    border-top: 1px dotted #CCC;
+    border-bottom: 1px dotted #CCC;
+    &>div {
+      width: 100%;
+    }
+    h2 {
+      font-weight: 300;
+      margin: .5em 0 10px 0;
+    }
+    div.tree {
+      margin-left: 5em;
+      margin-top: 0;
+      margin-bottom: 2em;
+      div.answer {
+        display: flex;
+        align-items: center;
+        border-left: $tree-border;
+        &:first-of-type {
+          padding-top: 2em;
+        }
+        &.wrong {
+          border-color: $wrong;
+          color: $wrong;
+        }
+        &.correct {
+          border-color: $correct;
+          color: $correct;
+        }
+        div.question {
+          display: inline-block;
+          margin: 1em 0 1em 1em;
+          h3 {
+            margin: 0;
+          }
+          p {
+            margin: 0 0 0 1em;
+            &.correctAnswer {
+              color: #999;
+            }
+          }
+        }
+        div.line {
+          display: inline-block;
+          width: 20px;
+          height: 0;
+          border-top: $tree-border;
+        }
+      }
+    }
+  }
+  div.user, div.answers {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  div.user {
+    display: flex;
+    width: 35%;
+    align-items: center;
+    span {
+      padding-left: .5em;
+      &.date {
+        font-size: .7em;
+        display: inline-block;
+      }
+    }
+  }
+  div.answers {
+    display: inline-block;
+    width: 50%;
+    height: 30px;
+    display: flex;
+    div.answer {
+      width: 20px;
+      align-self: flex-end;
+      border-top: 4px solid;
+      margin-right: 4px;
+      &.correct {
+        border-color: $correct;
+      }
+      &.wrong {
+        border-color: $wrong;
+      }
+    }
+  }
+  button.close {
+    position: absolute;
+    top: 1.33em;
+    right: 1em;
+    @media ($phone){
+      position: inherit;
+      display: block;
+      margin: 2em auto;
+    }
+  }
+}

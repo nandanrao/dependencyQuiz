@@ -13,13 +13,17 @@
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+    <link href='http://fonts.googleapis.com/css?family=Raleway:500,700,300|Raleway+Dots' rel='stylesheet' type='text/css'>
   </head>
-  <body ng-app="dependencyQuizApp">
+  <body ng-app="dependencyQuizApp" ng-controller="MainCtrl as main">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-
-      <div ui-view></div>
+    <div class="profile" ng-if="auth.user">
+        <img src="{{auth.user.thirdPartyUserData.picture}}" ng-class="main.profileClass" ng-click="main.profileClick()" alt="">
+        <button ng-if="expanded" ng-click="auth.$logout()">logout</a>
+    </div>
+    <div ui-view></div>
 
     <!-- build:js(.) scripts/oldieshim.js -->
     <!--[if lt IE 9]>
@@ -48,6 +52,7 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/newtest.js"></script>
         <script src="scripts/controllers/edit.js"></script>
         <script src="scripts/controllers/student.js"></script>
@@ -66,6 +71,9 @@
         <script src="scripts/services/formatdate.js"></script>
         <script src="scripts/services/helpers.js"></script>
         <script src="scripts/services/leave.js"></script>
+        <script src="scripts/controllers/profile.js"></script>
+        <script src="scripts/filters/orderobjectby.js"></script>
+        <script src="scripts/services/gradient.js"></script>
         <!-- endbuild -->
 </body>
 </html>

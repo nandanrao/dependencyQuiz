@@ -1,5 +1,5 @@
-<h2>{{ username }} ({{ test.name }})</h2>
 <button class="close" ng-click="click()">close</button>
+<h2>{{ username }} ({{ test.name }})</h2>
 <div class="tree">
   <div class="answer" ng-class="answer.correct ? 'correct' : 'wrong'" ng-repeat="answer in result.results | orderObjectBy: 'submitTime'">
       <div class="line" ng-style="individual.lineStyle(answer)"></div>

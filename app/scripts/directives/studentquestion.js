@@ -16,9 +16,9 @@ angular.module('dependencyQuizApp')
       controller: function($scope, $attrs, studentHelpers){
         // Helpers for selecting answers
         var isAnswered = studentHelpers.isAnswered
-        this.style = function(i){
+        this.class = function(i){
           if (!$scope.currentResults) return;
-          return i === $scope.currentResults.answer ? {'background-color': '#F99'} : {'background-color': 'default'}
+          return i === $scope.currentResults.answer ? 'selected' : '';
         }
         this.choose = function(i){
           $scope.currentResults.answer = i;

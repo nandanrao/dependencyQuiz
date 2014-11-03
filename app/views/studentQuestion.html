@@ -1,10 +1,10 @@
-<div class="student">
+<div class="testinprogress">
   <div class="question">
     <p class="question">{{ currentQuestion.question }}</p>
     <ul class="choices">
     <li class="choice" ng-repeat="choice in currentQuestion.choices">
       <p>
-      <button ng-style="studentQuestion.style($index)" class="choose" ng-click="studentQuestion.choose($index)">{{ letters[$index] }}</button>
+      <button ng-class="studentQuestion.class($index)" class="choose" ng-click="studentQuestion.choose($index)">{{ letters[$index] }}</button>
       <span class="choice">{{ choice.value }}</span>
       </p>
     </li>

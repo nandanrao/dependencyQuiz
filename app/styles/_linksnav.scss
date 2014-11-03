@@ -1,0 +1,20 @@
+ul.linksnav {
+  width: 100%;
+  div.parent &, div.dependency & {
+    width: 70%;
+  }
+  li {
+    text-align: center;
+    font-weight: 700;
+    &:hover {
+      cursor: pointer;
+    }
+    &:not(:first-child){
+      &::before {
+        content: '—';
+        display: block;
+        text-align: center;
+      }
+    }
+  }
+}

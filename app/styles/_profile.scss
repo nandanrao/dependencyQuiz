@@ -1,0 +1,17 @@
+div.profile {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+  img {
+    width: 50px;
+    border-image: linear-gradient(to top right, #b4e0ff, #ff9e5a) 10%;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  button {
+    margin: 1em;
+  } 
+}

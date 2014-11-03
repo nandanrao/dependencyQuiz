@@ -27,10 +27,15 @@ angular.module('dependencyQuizApp')
 
     this.dependency = function(){
       if (!leaveAndCreate()) return;
-      var thisQuestion = db.newTestQ($scope.currentTest);
-      $scope.currentTestQ.dependency = thisQuestion.id
-      thisQuestion.parent = $scope.currentTestQ.id;
-      $scope.currentTestQ = thisQuestion.id;
+      if ($scope.currentTestQ.dependency){
+        $scope.currentTestQ = $scope.currentTestQ.dependency;
+      }
+      else {
+        var thisQuestion = db.newTestQ($scope.currentTest);
+        $scope.currentTestQ.dependency = thisQuestion.id
+        thisQuestion.parent = $scope.currentTestQ.id;
+        $scope.currentTestQ = thisQuestion.id;
+      }
     };
 
     function leaveAndCreate(){
@@ -120,8 +125,9 @@ angular.module('dependencyQuizApp')
         return $scope.currentTest.testQuestions[$scope._currentTQ]
       },
       set: function(id){
-        $scope._currentTQ = id
-        $scope.currentQuestion = $scope.currentTestQ.Q
+        $scope._currentTQ = id;
+        $scope.currentQuestion = $scope.currentTestQ.Q;
+        $scope.oldQuestions = undefined;
       }
     })
 

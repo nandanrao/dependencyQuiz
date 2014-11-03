@@ -1,15 +1,17 @@
 <div class="testResults">
+  <h2>Results from {{ test.name }}</h2>
   <ul>
   <li accordion ng-repeat="result in testResults">
-
     <div ng-if="!expanded" class="user" ng-click="click()" >
       <img src="{{ users[result.user].pic}} " width="50px" alt="">
-      <span>
+      <p>
+      <span class="username">
       {{ users[result.user].name }}  
       </span>
-      <span>
+      <span class="date">
       {{ results.formatDate(result.start) }}
       </span>
+      </p>
     </div>
     <div ng-if="!expanded" class="answers" ng-click="click()" >
       <div class="answer" data-submittime="{{ answer.submitTime }}" data-question="{{ questions[answer.Q].question }}" ng-class="answer.correct ? 'correct' : 'wrong'" ng-repeat="answer in result.results | orderObjectBy: 'submitTime'" ng-style="results.answerStyle(answer)"></div>

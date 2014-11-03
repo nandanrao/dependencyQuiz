@@ -1,10 +1,11 @@
-<h1>{{currentTest.name}}</h1>
+<div id="pg-student">
+  <h1>{{currentTest.name}}</h1>
 
-<div ng-if="testResults">
-<student-question></student-question>
-</div>
+  <div ng-if="testResults">
+  <student-question></student-question>
+  </div>
 
-<div ng-if="!testResults">
-
-  <button ng-click="std.startTest(currentTest)">take test</button>
+  <div ng-if="!testResults" class="taketest">
+    <button ng-click="std.startTest(currentTest)">take test</button>
+  </div>
 </div>

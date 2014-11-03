@@ -1,3 +1,3 @@
-<ul ng-show="arr.length > 0">
-  <li ng-repeat="question in arr" ng-click="linksNav.show(question)">{{ question.question }}</li>
+<ul class="linksnav" ng-show="arr.length > 0">
+  <li ng-repeat="question in arr | orderBy: order()" ng-style="linksNav.style(arr, $index)" ng-click="linksNav.show(question)">{{ question.question | limitTo: 75}}</li>
 </ul>

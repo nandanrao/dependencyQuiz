@@ -1,0 +1,75 @@
+html, html a, button, input, textarea {
+  -webkit-font-smoothing: antialiased;
+}
+
+body, input, textarea {
+  font-family: $font;
+  color: $color_b;
+}
+
+body {
+  font-family: $font;
+  font-weight: 300;
+  background-color: $color_a;
+  margin: 0 20px;
+  @media (min-width: 767px) and (max-width: 900px){
+    font-size: .8em
+  }
+  @media ($phone){
+    font-size: .7em;
+  }
+}
+
+h3 span {
+  color: #f99;
+}
+.option {
+  p {
+    display: inline-block;
+  }
+}
+
+input, textarea {
+  margin-top: .5em;
+  font-size: 1.2em;
+  padding: 3px 5px;
+  line-height: 1.2em;
+  border: 2px solid $color_b;
+  width: 90%;
+  @include placeholder {
+    font-family: $font;
+    font-weight: 300;
+    line-height: normal;
+  }
+}
+
+input {
+  display: inline-block;
+}
+input[type="checkbox"]{
+  width: auto;
+  display: inline-block;
+}
+
+
+button {
+  font-family: $title;
+  letter-spacing: .33em;
+  color: $color_b;
+  padding: 0 15px 0 20px;
+  border: 1px solid $color_b;
+  border-image: none;
+  transition: color .5s;
+  &:hover {
+    cursor: pointer;
+    color: $accent_a; 
+    border-image: linear-gradient($accent_b, $accent_a) 10%;
+  }
+  text-transform: uppercase;
+  font-weight: 500;
+  // font-size: 2.33em;
+  // &::before {
+  //   content: '+';
+  //   font-weight: 500;
+  // }
+}
