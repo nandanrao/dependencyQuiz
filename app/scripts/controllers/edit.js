@@ -75,9 +75,10 @@ angular.module('dependencyQuizApp')
       })
     }
 
-    $scope.$on('$locationChangeStart', function(event, next, current) {
-      if (leave($scope)) return;
-    });
+    // $scope.$on('$locationChangeStart', function(event, next, current) {
+    //   if (next === 'edit') return;
+    //   if (leave($scope)) return;
+    // });
 
     window.onunload = function(e){
       if (!leave($scope)) {
@@ -102,7 +103,6 @@ angular.module('dependencyQuizApp')
     }
 
     var hasFirst = function(test){
-      console.log(_.find(test.testQuestions, 'first'))
       return _.find(test.testQuestions, 'first')
     }
 

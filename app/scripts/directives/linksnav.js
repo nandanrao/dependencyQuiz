@@ -48,17 +48,10 @@ angular.module('dependencyQuizApp')
         this.style = function(arr, i){
           var gradient = new Gradient;
 
-          // var h, s, l, a;
-          // h = 0;
-          // s = 90 + '%';
-          // l = 45 + '%';
-          // a = 0.8;
-
           gradient.setSpectrum('#79c6ff', '#8aee7e')
           var inc = 100/arr.length;
 
           var color = gradient.colourAt(inc*i);
-          console.log(color)
 
           return {
             "color": '#' + color

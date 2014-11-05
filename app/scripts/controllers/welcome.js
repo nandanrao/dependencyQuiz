@@ -8,7 +8,7 @@
  * Controller of the dependencyQuizApp
  */
 angular.module('dependencyQuizApp')
-  .controller('WelcomeCtrl', function ($scope, auth, fb, $state) {
+  .controller('WelcomeCtrl', function ($scope, $firebase, auth, fb, $state) {
 
   var setUser = function(id){
     var user = $firebase(users.child(id)).$asObject();
