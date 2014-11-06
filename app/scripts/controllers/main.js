@@ -29,4 +29,9 @@ angular.module('dependencyQuizApp')
       }
     }
 
+    this.profileStyle = function(){
+      return {
+        'visibility': 'visible'
+      }
+    }
   })

@@ -19,6 +19,8 @@ angular
     'ui.router'
   ])
   .config(function ($stateProvider, $locationProvider, $urlRouterProvider) {
+    $urlRouterProvider
+      .otherwise('/');
     $stateProvider
       .state('home', {
         url: '/',
@@ -37,7 +39,7 @@ angular
         }
       })
       .state('welcome', {
-        url: '/welcome:redirect',
+        url: '/welcome/:redirect',
         templateUrl: 'views/welcome.html',
         controller: 'WelcomeCtrl as welcome',
       })
@@ -105,12 +107,14 @@ angular
 .run(function($rootScope, auth, $location, $state){
   // Check for user, if not redirect to welcome, with same params... 
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams){
+    console.log('start')
     auth.$getCurrentUser().then(function(user){
       if (!user){
         var href = $state.href(toState, toParams)
         if(toState.name === 'welcome'){
           href = '/'
         };
+        href = encodeURIComponent(href)
         $state.go('welcome', {redirect: href}, {notify: false, reload: true}).then(function(results){
           $state.reload();
         });
