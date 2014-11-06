@@ -19,6 +19,7 @@ angular.module('dependencyQuizApp')
           var link = {};
           link.id = id;
           var t = $scope.currentTest.testQuestions[id];
+          if (!t.Q) return;
           db.getQuestion(t.Q).$loaded().then(function(Q){
             link.question = Q.question;
           })
@@ -28,7 +29,7 @@ angular.module('dependencyQuizApp')
         var buildArray = function(question, property){
           var arr = [];
           function Traverse(question){
-            if (!question[property]) return;
+            if (!question || !question[property]) return;
             var id = question[property]
             arr.push(createLink(id));
             var t = db.getTestQ(id, $scope.currentTest)

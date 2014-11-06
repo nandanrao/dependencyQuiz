@@ -90,18 +90,48 @@ angular
 
     var getTest = function(testId){
       var test = $firebase(fb.tests.child(testId)).$asObject();
-      console.log('holla', test)
       return test.$loaded();
+    }
+
+    var validateQuestion = function(tq, test){
+      var Q = getQuestion(tq.Q).$loaded();
+      return Q.then(function(Q){
+        console.log(Q);
+        if (Q.choices.length > 1 
+        && _.some(Q.choices, 'correct') 
+        && Q.question.length > 3) {
+          return
+        }
+        else {
+          deleteTestQSync(tq.id, test);
+          return
+        }
+      })
+    };
+
+    var getValidatedTest = function(testId){
+      return $q(function(resolve, reject){
+        getTest(testId).then(function(test){
+          var promises = [];
+          _.each(test.testQuestions, function(tq){
+            if (!tq.Q) {
+              deleteTestQSync(tq.id, test)
+            }
+            else {
+              promises.push(validateQuestion(tq, test))
+            }
+          })
+          $q.all(promises).then(resolve(test))
+        })
+      })
     }
 
     var myTests = function(user){
       var tests = $firebase(fb.tests.startAt(user.id).endAt(user.id)).$asObject();
-      console.log(tests);
       return tests;
     }
 
     var getQuestion = function(id) {
-      console.log('get question');
       var Q = $firebase(fb.questions.child(id)).$asObject(); 
       return Q
     };
@@ -112,7 +142,6 @@ angular
 
     var setTestQ = function(q, test){
       if (!test.testQuestions){
-        console.log('reseting testQuestions!')
         test.testQuestions = {};
       }
       test.testQuestions[q.id] = q;
@@ -240,6 +269,7 @@ angular
       newQ: newQ,
       newTest: newTest,
       getTest: getTest,
+      getValidatedTest: getValidatedTest,
       getTestResults : getTestResults,
       getUserFromResults: getUserFromResults,
       getTakersOfTest: getTakersOfTest,

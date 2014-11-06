@@ -75,10 +75,10 @@ angular.module('dependencyQuizApp')
       })
     }
 
-    // $scope.$on('$locationChangeStart', function(event, next, current) {
-    //   if (next === 'edit') return;
-    //   if (leave($scope)) return;
-    // });
+    $scope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams){
+        if (leave($scope)) return;
+        e.preventDefault();
+    })
 
     window.onunload = function(e){
       if (!leave($scope)) {

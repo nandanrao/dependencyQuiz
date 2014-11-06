@@ -11,17 +11,17 @@ angular.module('dependencyQuizApp')
   .factory('leave', function (db) {
     var leave = function ($scope){
       if(!$scope.currentQuestion){
-        db.deleteTestQSync($scope.currentTestQ.id, $scope.currentTest);
+        // db.deleteTestQSync($scope.currentTestQ.id, $scope.currentTest);
         return true;
       };
       if ($scope.newQuestion.$valid){
         return true
       }
       else {
-        if (window.confirm('you have unsaved changes, you really wanna go?')){
+        if (window.confirm('This question is not valid, and will not show up on a test, you sure you want to leave?')){
           $scope.unbind();
-          db.deleteQuestion($scope.currentQuestion.id)
-          db.deleteTestQSync($scope.currentTestQ.id, $scope.currentTest);
+          // db.deleteQuestion($scope.currentQuestion.id)
+          // db.deleteTestQSync($scope.currentTestQ.id, $scope.currentTest);
           return true
         }
         else {

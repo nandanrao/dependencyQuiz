@@ -75,7 +75,7 @@ angular
         controller: 'StudentCtrl as std',
         resolve: {
           'test': ['db', '$stateParams', function(db, $stateParams){
-            return db.getTest($stateParams.test)
+            return db.getValidatedTest($stateParams.test)
           }],
           'questions': ['db', 'test', function(db, test){
             return db.getQuestions(test)
