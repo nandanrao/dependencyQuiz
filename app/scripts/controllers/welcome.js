@@ -11,7 +11,7 @@ angular.module('dependencyQuizApp')
   .controller('WelcomeCtrl', function ($scope, $firebase, auth, fb, $state) {
 
   var setUser = function(id){
-    var user = $firebase(users.child(id)).$asObject();
+    var user = $firebase(fb.users.child(id)).$asObject();
     console.log(user)
     user.$loaded().then(function(obj){
       obj.$bindTo($scope, 'user')
