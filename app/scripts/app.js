@@ -33,6 +33,9 @@ angular
           'myTests': ['db', 'user', function(db, user){
             return db.myTests(user).$loaded();
           }],
+          'hasTests': ['db', 'user', function(db, user){
+            return db.hasTests(user);
+          }],
           'myResults': ['db', 'user', function(db, user){
             return db.myResults(user);
           }],

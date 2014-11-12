@@ -64,7 +64,7 @@ angular.module('dependencyQuizApp')
   var endTest = function(){
     var end = Date.now();
     $scope.testResults.end = end;
-    alert('all done!')
+    $scope.finished = true;
   }
 
   var Results = function(){
@@ -75,7 +75,8 @@ angular.module('dependencyQuizApp')
   // Init
   $scope.letters = ['a','b','c','d','e','f','g','h','i'];
   $scope.currentTest = test;
-  $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id
+  $scope._currentTQ = _.find($scope.currentTest.testQuestions, { 'first' : true}).id;
+  $scope.finished = false;
 
   Object.defineProperty($scope, 'currentResults', {
     get: function(){

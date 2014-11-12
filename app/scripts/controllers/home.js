@@ -8,24 +8,20 @@
  * Controller of the dependencyQuizApp
  */
 angular.module('dependencyQuizApp')
-  .controller('HomeCtrl', function ($state, $firebase, $scope, auth, $location, db, helpers, myResults, myTests) {
+  .controller('HomeCtrl', function ($state, $firebase, fb, $scope, auth, $location, db, helpers, myResults, myTests, hasTests) {
+
+
 
   $scope.auth = auth;
   $scope.tests = myTests;
+  console.log($scope.tests)
   $scope.myResults = myResults;
+  $scope.hasTests = hasTests;
   this.formatDate = helpers.formatDate;
-
-  this.hasTests= function(tests){
-    return _.size($scope.tests) > 4
-  };
 
   this.logout = function(){
     console.log('logging out')
     auth.$logout();
-  }
-
-  this.tester = function(){
-    console.log(auth.user);
   }
 
   this.newTest = function(){

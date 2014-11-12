@@ -128,7 +128,16 @@ angular
 
     var myTests = function(user){
       var tests = $firebase(fb.tests.startAt(user.id).endAt(user.id)).$asObject();
+      console.log(tests)
       return tests;
+    };
+
+    var hasTests = function(user){
+      return $q(function(resolve, reject){
+        fb.tests.startAt(user.id).endAt(user.id).on('value', function(snap){
+          resolve(snap.hasChildren())
+        })
+      })
     }
 
     var getQuestion = function(id) {
@@ -275,6 +284,7 @@ angular
       getTakersOfTest: getTakersOfTest,
       myResults: myResults,
       myTests: myTests,
+      hasTests: hasTests,
       createTestResults: createTestResults,
       getAllQuestions: getAllQuestions,
     }

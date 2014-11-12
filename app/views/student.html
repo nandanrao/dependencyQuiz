@@ -8,4 +8,8 @@
   <div ng-if="!testResults" class="taketest">
     <button ng-click="std.startTest(currentTest)">take test</button>
   </div>
+  <div class="finished" ng-if="finished">
+    <h1>you finished!</h1>
+    <p>Hellyes. You have finished {{currentTest.name}}.</p>
+  </div>
 </div>
